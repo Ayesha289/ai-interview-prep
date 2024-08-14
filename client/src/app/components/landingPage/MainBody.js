@@ -31,7 +31,7 @@ export default function body() {
           <span class="py-3 px-8 bg-black rounded-lg">Join the Waitlist</span>
         </button>
         <button
-          className="border border-white text-white font-semibold py-3 px-8 rounded-lg hover:bg-white hover:text-black transition duration-300"
+          className="border border-white text-white font-semibold py-3 px-8 rounded-lg hover:bg-cyan-200 hover:border-black hover:text-black transition duration-300"
           onClick={explore}
         >
           Explore

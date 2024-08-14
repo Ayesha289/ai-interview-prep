@@ -1,4 +1,4 @@
-import * as react from 'react';
+import * as React from 'react';
 import Image from 'next/image';
 
 export default function Navbar() {
@@ -8,7 +8,9 @@ export default function Navbar() {
                 <div className='flex items-center justify-between h-16'>
                     <div className='flex items-center'>
                         <div className='flex-shrink-0'>
-                            <a href='/' className='text-white font-extrabold'>PREPBOT</a>
+                          <span className="text-3xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-pink-500">
+                            Preppy
+                          </span>
                         </div>
                     </div>
                     <div className='hidden md:block'>

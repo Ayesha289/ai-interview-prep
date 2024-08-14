@@ -1,13 +1,36 @@
+'use client'
 /* eslint-disable react/no-unescaped-entities */
+import * as React from "react"; 
 import Image from "next/image";
+import CoFounders from "../components/landingPage/cofounders";
+import Footer from "../components/landingPage/footer";
 
 export default function HomePage() {
+  const goBack = () => {
+    window.location.href = "/";
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white px-4">
       {/* Back Button */}
       <div className="self-start mt-4 ml-4">
-        <button className="flex items-center space-x-2 text-white hover:text-gray-300 transition duration-300">
-          <span className="material-icons">arrow_back</span>
+        <button className="flex items-center space-x-2 bg-cyan-500 p-3 font-semibold rounded-lg text-black hover:bg-cyan-700 transition duration-300" onClick={goBack}>
+          <div class="flex items-center -space-x-3 translate-x-3">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 stroke-black font-semibold -translate-x-2 transition duration-300 group-hover:translate-x-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="3"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 5l-7 7 7 7"
+              />
+            </svg>
+          </div>
           <span>Back to Waitlist</span>
         </button>
       </div>
@@ -17,13 +40,15 @@ export default function HomePage() {
         <h1 className="text-5xl font-bold">Explore our App</h1>
         <p className="text-lg mt-4">
           Welcome to{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-pink-500">Preppy</span>, your
-          own interview app.
+          <span className="text-2xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-pink-500">
+            Preppy
+          </span>
+          , your own interview app.
         </p>
         <p className="text-lg mt-2 max-w-2xl mx-auto">
-          Interview preparations just got easier! With our app you can get a 
-          mock interview based on the job title and experience level of your choice, 
-          getting you ready for the big day.
+          Interview preparations just got easier! With our app you can get a
+          mock interview based on the job title and experience level of your
+          choice, getting you ready for the big day.
         </p>
       </div>
 
@@ -32,21 +57,21 @@ export default function HomePage() {
         <div className="bg-gray-800 p-6 rounded-lg text-center">
           <h3 className="text-xl font-semibold">Personalized Itineraries</h3>
           <p className="mt-4 text-sm">
-            Preppy's AI-driven tool creates customized daily plans based on your
-            preferences, interests, and budget. From must-see attractions to
-            hidden gems, your travel itinerary will be tailored just for you.
+            Preppy's AI-driven tool creates personalized mock interviews based
+            of the information you feed it. From a Junior frontend developer
+            role to a role that requires an experienced accountant preppy's got
+            you covered
           </p>
         </div>
         <div className="bg-gray-800 p-6 rounded-lg text-center">
           <h3 className="text-xl font-semibold">Real-Time Data Integration</h3>
           <p className="mt-4 text-sm">
-            Access up-to-date information on attractions, activities,
-            restaurants, and accommodations through integrated APIs. Stay
-            informed about current offerings and availability.
+            Access up-to-date information on interview topics and insights to
+            help improve before the realtime interview.
           </p>
         </div>
         <div className="bg-gray-800 p-6 rounded-lg text-center">
-          <h3 className="text-xl font-semibold">Optimized Travel Experience</h3>
+          <h3 className="text-xl font-semibold">Optimized Chat Experience</h3>
           <p className="mt-4 text-sm">
             Prioritize your activities and destinations based on your interests
             and budget. Rahi optimizes your itinerary for a seamless travel
@@ -54,9 +79,7 @@ export default function HomePage() {
           </p>
         </div>
         <div className="bg-gray-800 p-6 rounded-lg text-center">
-          <h3 className="text-xl font-semibold">
-            Accommodation Recommendations
-          </h3>
+          <h3 className="text-xl font-semibold">Progress Recommendations</h3>
           <p className="mt-4 text-sm">
             Receive suggestions for hotels and other accommodations near your
             planned activities. Compare options and book your stay with ease,
@@ -64,6 +87,20 @@ export default function HomePage() {
           </p>
         </div>
       </div>
+
+      {/* Founders Section */}
+      <div className="mt-12">
+        <CoFounders />
+      </div>
+
+      {/* footer section */}
+        <footer className="bg-gray-200 dark:bg-gray-800 py-3 px-2 fixed mt-auto bottom-0 w-full">
+          <div className="container mx-auto max-w-md">
+            <p className="text-gray-500 dark:text-gray-400 text-center text-sm">
+              © 2024 SHOPEASE
+            </p>
+          </div>
+      </footer>
     </div>
   );
 }
