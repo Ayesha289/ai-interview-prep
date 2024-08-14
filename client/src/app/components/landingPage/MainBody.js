@@ -1,8 +1,13 @@
+'use client'
 import * as React from "react";
 import Image from "next/image";
 
 export default function body() {
-  return (
+    const explore = () => {
+    window.location.href = "/explore";
+  };
+
+  return ( 
     <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
       {/* Header Section */}
       <div className="text-center py-16">
@@ -13,8 +18,9 @@ export default function body() {
         </h1>
         <h2 className="text-4xl font-bold mt-4">Scalable AI.</h2>
         <p className="text-lg mt-6 max-w-2xl mx-auto">
-          Our technology integrates . Proof of Stake, its consensus algorithm
-          enables unlimited speeds.
+          Our technology integrates AI into preparations for any job Interview
+          in any industry. within the coming weeks the product will be live and
+          the first 200 users will be getting full access to the bot.
         </p>
       </div>
 
@@ -22,12 +28,13 @@ export default function body() {
       <div className="flex space-x-4 mt-8">
         <button class="py-3 px-1 bg-gradient-to-r from-cyan-500 to-pink-500 rounded-lg">
           {/* <!-- Button Body --> */}
-          <span class="py-3 px-8 bg-black rounded-lg">
-            Get Started
-          </span>
+          <span class="py-3 px-8 bg-black rounded-lg">Join the Waitlist</span>
         </button>
-        <button className="border border-white text-white font-semibold py-3 px-8 rounded-lg hover:bg-white hover:text-black transition duration-300">
-          Ecosystems
+        <button
+          className="border border-white text-white font-semibold py-3 px-8 rounded-lg hover:bg-white hover:text-black transition duration-300"
+          onClick={explore}
+        >
+          Explore
         </button>
       </div>
 

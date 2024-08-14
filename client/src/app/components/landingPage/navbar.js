@@ -13,7 +13,7 @@ export default function Navbar() {
                     </div>
                     <div className='hidden md:block'>
                         <div className='ml-4 flex items-center space-x-4'>
-                            <a href='/' className='text-white font-medium p-3 rounded-md hover:bg-lime-600 hover:text-black transition duration-300 ease-in-out'>Waitlist now!</a>
+                            <a href='/' className='text-white font-medium p-3 rounded-md hover:bg-cyan-500 hover:text-black transition duration-300 ease-in-out'>Waitlist now!</a>
                         </div>
                     </div>
                 </div>
