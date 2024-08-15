@@ -1,13 +1,26 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 import * as React from "react";
 import Image from "next/image";
+import Modal from "./modal";
+import { useState } from 'react';
 
 export default function body() {
-    const explore = () => {
+  const explore = () => {
     window.location.href = "/explore";
   };
 
-  return ( 
+  const [showModal, setShowModal] = useState(false);
+
+  const showDialog = () => {
+    setShowModal(true);
+  };
+
+  const hideDialog = () => {
+    setShowModal(false);
+  };
+
+  return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
       {/* Header Section */}
       <div className="text-center py-16">
@@ -26,9 +39,9 @@ export default function body() {
 
       {/* Buttons */}
       <div className="flex space-x-4 mt-8">
-        <button class="py-3 px-1 bg-gradient-to-r from-cyan-500 to-pink-500 rounded-lg">
+        <button onClick={showDialog} class="py-3 px-1 bg-gradient-to-r from-cyan-500 to-pink-500 rounded-lg">
           {/* <!-- Button Body --> */}
-          <span class="py-3 px-8 bg-black rounded-lg">Join the Waitlist</span>
+          <span className="py-3 px-8 bg-black rounded-lg">Join the Waitlist</span>
         </button>
         <button
           className="border border-white text-white font-semibold py-3 px-8 rounded-lg hover:bg-cyan-200 hover:border-black hover:text-black transition duration-300"
@@ -48,6 +61,12 @@ export default function body() {
           className="w-full h-auto"
         />
       </div>
+
+      {/* Modal */}
+      {showModal && (
+        <Modal onClose={hideDialog} />
+      )}
+
     </div>
   );
 }
