@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from utils.prompt import generate_interview_prompt
+from .prompt import generate_interview_prompt
 import speech_recognition as sr
 import os
 from dotenv import load_dotenv
@@ -98,7 +98,7 @@ def conversation():
                 user_input = listen()
 
             elif "bye" in user_input.lower():
-                bot_response = conversation_chain.run({"question": "Send a friendly goodbye question and give a nice short sweet compliment based on the conversation."})
+                bot_response = conversation_chain.run({"question": "Send a friendly goodbye note and give a nice short sweet compliment based on the conversation."})
                 respond(bot_response)
                 conversation_history.append({"user": "Goodbye", "bot": bot_response})
                 return
