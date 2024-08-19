@@ -39,19 +39,13 @@ export default function body() {
 
       {/* Buttons */}
       <div className="flex space-x-4 mt-8">
-        <button onClick={showDialog} class="py-3 px-1 bg-gradient-to-r from-cyan-500 to-pink-500 rounded-lg">
+        <button onClick={showDialog} className="py-4 px-2 bg-gradient-to-r from-cyan-500 to-pink-500 rounded-lg">
           {/* <!-- Button Body --> */}
-          <span className="py-3 px-8 bg-black rounded-lg">Join the Waitlist</span>
-        </button>
-        <button
-          className="border border-white text-white font-semibold py-3 px-8 rounded-lg hover:bg-cyan-200 hover:border-black hover:text-black transition duration-300"
-          onClick={explore}
-        >
-          Explore
+          <span className="py-3 px-9 bg-black text-xl rounded-lg">Start Prepping Now</span>
         </button>
       </div>
 
-      {/* Image Section */}
+      {/* Image Section
       <div className="mt-12">
         <Image
           src="/assets/logo.png"
@@ -60,7 +54,7 @@ export default function body() {
           height={300}
           className="w-full h-auto"
         />
-      </div>
+      </div> */}
 
       {/* Modal */}
       {showModal && (
