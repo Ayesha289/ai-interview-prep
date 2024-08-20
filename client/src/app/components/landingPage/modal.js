@@ -1,39 +1,79 @@
 'use client'
 import * as React from 'react';
 import { useState } from 'react';
-import { db } from '@/app/firebase';
-import { addDoc, collection } from 'firebase/firestore';
 
 export default function Modal({ onClose }) {
   const [isSignUp, setIsSignUp] = useState(true);
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleEmailChange = (event) => setEmail(event.target.value);
+  const handleNameChange = (event) => setName(event.target.value);
   const handlePasswordChange = (event) => setPassword(event.target.value);
   const handleConfirmPasswordChange = (event) => setConfirmPassword(event.target.value);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (isSignUp) {
-      // Sign-up logic here
       if (password !== confirmPassword) {
         alert("Passwords do not match!");
         return;
       }
-      // Add the email to Firestore
-      if(email !== ""){
-         await addDoc(collection(db, 'users'), {
-           email: email.trim(),
-           password: password // Storing passwords like this is insecure: use proper encryption in production
-         });
+      try {
+        const response = await fetch('http://127.0.0.1:5000/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email,
+            fname: name, 
+            password1: password,
+            password2: confirmPassword,
+          }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+          if (data == 'Email Already Exists!')
+            alert(data)
+          console.log('User registered:', data);
+          alert('Successfully registered!')
+          onClose();
+        } else {
+          alert(`Registration failed: ${data.message}`);
+        }
+      } catch (error) {
+        console.error('Error registering user:', error);
+        alert('An error occurred during registration.');
       }
     } else {
-      // Login logic here
+      try {
+        const response = await fetch('http://127.0.0.1:5000/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password,
+          }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+          console.log('User logged in:', data);
+          alert('Successfully logged in!');
+          onClose();
+        } else {
+          alert(`Login failed: ${data.message}`);
+        }
+      } catch (error) {
+        console.error('Error logging in:', error);
+        alert('An error occurred during login.');
+      }
     }
-    console.log('Email submitted:', email);
-    onClose(); // Close the modal after submission
   };
 
   return (
@@ -48,6 +88,15 @@ export default function Modal({ onClose }) {
             value={email}
             onChange={handleEmailChange}
           />
+          {isSignUp && (
+            <input
+            type="text"
+            className="w-full px-3 py-2 border text-black rounded-md focus:outline-none focus:ring focus:ring-cyan-500 mt-4"
+            placeholder="Enter your name"
+            value={name}
+            onChange={handleNameChange}
+          />
+          )}
           <input
             type="password"
             className="w-full px-3 py-2 border text-black rounded-md focus:outline-none focus:ring focus:ring-cyan-500 mt-4"

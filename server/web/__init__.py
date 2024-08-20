@@ -5,6 +5,7 @@ from flask_mail import Mail
 from flask_login import LoginManager
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
+from flask_cors import CORS
 import os
 
 load_dotenv()
@@ -17,6 +18,8 @@ jwt = JWTManager()
 
 def create_app():
     app = Flask(__name__)
+    CORS(app)
+    CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
     app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
     basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
     db_path = os.path.join(basedir, 'instance', 'data.db')
@@ -37,8 +40,8 @@ def create_app():
     from .auth import auth
     from .interview import interview
 
-    app.register_blueprint(interview, url_prefix='/')
-    app.register_blueprint(auth, url_prefix='/')
+    app.register_blueprint(interview, url_prefix='/interview')
+    app.register_blueprint(auth, url_prefix='/auth')
 
     from .model import User, Evaluation
     with app.app_context():
