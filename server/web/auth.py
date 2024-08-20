@@ -22,7 +22,7 @@ def login():
                     login_user(user, remember=True)
                     return jsonify("Successfully Logged In")
                 else:
-                    return jsonify('Invalid credentials!')
+                    return jsonify('Invalid credentials!') 
             elif not user:
                 return jsonify('Invalid credentials!')
         except Exception as e:
