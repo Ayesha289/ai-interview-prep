@@ -1,18 +1,17 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from os import path
+from flask_pymongo import PyMongo
 from flask_mail import Mail
 from flask_login import LoginManager
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 from flask_cors import CORS
+from bson.objectid import ObjectId
+from .model import User
 import os
 
 load_dotenv()
 
-db = SQLAlchemy()
-DB_NAME = 'data.db'
-
+mongo = PyMongo()
 mail = Mail()
 jwt = JWTManager()
 
@@ -21,10 +20,10 @@ def create_app():
     CORS(app)
     CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
     app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
-    basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-    db_path = os.path.join(basedir, 'instance', 'data.db')
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_path
-    db.init_app(app)
+    
+    # MongoDB configuration
+    app.config["MONGO_URI"] = os.getenv("MONGO_URI")
+    mongo.init_app(app)
 
     app.config['MAIL_SERVER']="smtp.gmail.com"
     app.config['MAIL_PORT'] = 465
@@ -32,8 +31,6 @@ def create_app():
     app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
     app.config['MAIL_USE_TLS'] = False
     app.config['MAIL_USE_SSL'] = True
-    mail = Mail(app)
-    
     mail.init_app(app)
     jwt.init_app(app)
     
@@ -43,16 +40,16 @@ def create_app():
     app.register_blueprint(interview, url_prefix='/interview')
     app.register_blueprint(auth, url_prefix='/auth')
 
-    from .model import User, Evaluation
-    with app.app_context():
-        db.create_all()
-
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
 
     @login_manager.user_loader
-    def load_user(id):
-        return User.query.get(int(id))
+    def load_user(user_id):
+        user_data = mongo.db.users.find_one({"_id": ObjectId(user_id)})
+        if user_data:
+            return User(user_data)
+        return None
+
 
     return app
