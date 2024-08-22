@@ -26,7 +26,7 @@ export default function InterviewDashboard() {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl text-center font-bold mb-6">Interview Dashboard</h1>
+      <h1 className="text-3xl text-center font-bold mb-6">Interviews Dashboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-transparent p-4 rounded-lg shadow-md">
           <h2 className="text-xl text-white font-bold mb-4">Interview Performance Overview</h2>
