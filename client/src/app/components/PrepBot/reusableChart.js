@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Chart, ArcElement, BarElement, Tooltip, Legend, CategoryScale, LinearScale } from 'chart.js';
-import { Pie, Bar, Radar } from 'react-chartjs-2';
+import { Doughnut, Bar, Radar } from 'react-chartjs-2';
 import { Flipper, Flipped } from 'react-flip-toolkit';
 
 // Register the necessary elements
@@ -43,34 +43,22 @@ const ChartComponent = ({ data }) => {
     ],
   };
 
-  const polygonData = {
-    labels: data.labels,
-    datasets: [
-      {
-        label: 'Dataset',
-        data: data.values,
-        backgroundColor: 'rgba(153, 102, 255, 0.2)',
-        borderColor: 'rgba(153, 102, 255, 1)',
-        borderWidth: 1,
-      },
-    ],
-  };
-
   return (
     <Flipper flipKey={chartType}>
       <Flipped flipId="chart">
-        <div>
-          {chartType === 'pie' && <Pie data={pieData} options={{
+        <div className='flex items-center justify-center h-72 w-full'>
+          {chartType === 'pie' && <Doughnut data={pieData} options={{
             responsive: true,
             maintainAspectRatio: false,
-            height: 400,
-            width: 400
+            // height: 400,
+            // width: 400,
+
           }} />}
           {chartType === 'bar' && <Bar data={barData} options={{
             responsive: true,
             maintainAspectRatio: false,
-            height: 400,
-            width: 400
+            height: 700,
+            // width: 400
           }} />}
         </div>
       </Flipped>
