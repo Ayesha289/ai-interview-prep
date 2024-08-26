@@ -1,8 +1,9 @@
 "use client";
 import * as React from "react";
-import Navbar from "../components/landingPage/navbar";
+import Navbar from "../components/PrepBot/navbar";
 import ChartComponent from "../components/PrepBot/reusableChart"; // Import the ChartComponent
 import BoxContainer from "../components/PrepBot/boxContainer";
+
 
 export default function Interview() {
   const data = {
@@ -20,7 +21,7 @@ export default function Interview() {
     <>
       <Navbar />
       <div className="grid-cols-1 m-5">
-        <div className="bg-[#280d16] p-5 rounded-xl w-full h-auto mb-6">
+        <div className="bg-[#06121c] p-5 rounded-xl w-full h-auto mb-6">
           <ChartComponent data={data} />
         </div>
         <BoxContainer />
