@@ -1,6 +1,7 @@
 'use client'
 import * as React from 'react';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Modal({ onClose }) {
   const [isSignUp, setIsSignUp] = useState(true);
@@ -13,6 +14,8 @@ export default function Modal({ onClose }) {
   const handleNameChange = (event) => setName(event.target.value);
   const handlePasswordChange = (event) => setPassword(event.target.value);
   const handleConfirmPasswordChange = (event) => setConfirmPassword(event.target.value);
+
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,6 +45,7 @@ export default function Modal({ onClose }) {
           console.log('User registered:', data);
           alert('Successfully registered!')
           onClose();
+          router.push('/PrepBot');
         } else {
           alert(`Registration failed: ${data.message}`);
         }
@@ -66,6 +70,7 @@ export default function Modal({ onClose }) {
           console.log('User logged in:', data);
           alert('Successfully logged in!');
           onClose();
+          router.push('/PrepBot');
         } else {
           alert(`Login failed: ${data.message}`);
         }
