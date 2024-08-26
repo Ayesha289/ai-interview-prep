@@ -14,7 +14,7 @@ export default function InterviewDashboard() {
 
   const viewSpecificInterviews = () => {
     // Logic to view all interviews
-    router.push("/your-interviews");
+    router.push("/interview");
   };
 
   const data = {
