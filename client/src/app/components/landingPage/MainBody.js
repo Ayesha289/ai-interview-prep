@@ -21,7 +21,7 @@ export default function body() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-tr from-black to-cyan-600 text-white">
       {/* Header Section */}
       <div className="text-center py-16">
         <h1 className="text-5xl font-bold">
