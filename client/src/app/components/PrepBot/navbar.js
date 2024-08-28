@@ -3,8 +3,6 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { GiMagicPalm } from "react-icons/gi";
 
-
-
 export default function Navbar() {
     const router = useRouter();
 
@@ -26,9 +24,9 @@ export default function Navbar() {
                     </div>
                     <div className='hidden md:block'>
                         <div className='ml-4 flex items-center space-x-4'>
-                            <h3 className='text-xl flex items-center gap-2'><GiMagicPalm className='text-4xl text-yellow-300' />Welcome back, Favour</h3> {/*this should be the name of the logged in user from the database*/}
+                            <h3 className='text-xl flex items-center gap-2'><GiMagicPalm className='text-4xl text-yellow-300' />Welcome!</h3>
                             <a onClick={viewAllInterviews} className='text-white cursor-pointer font-medium p-3 rounded-md capitalize hover:bg-cyan-500 hover:text-black transition duration-300 ease-in-out'>all interviews</a>
-                            <a href='/' className='text-white font-medium p-3 rounded-md capitalize hover:bg-cyan-500 hover:text-black transition duration-300 ease-in-out'>logout</a>
+                            <a href='/' className='text-white font-medium p-3 rounded-md capitalize hover:bg-cyan-500 hover:text-black transition duration-300 ease-in-out'>Logout</a>
                         </div>
                     </div>
                 </div>

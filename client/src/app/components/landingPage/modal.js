@@ -40,11 +40,12 @@ export default function Modal({ onClose }) {
         });
         const data = await response.json();
         if (response.ok) {
+          localStorage.setItem('userId', data.id);
           if (data == 'Email Already Exists!')
             alert(data)
           console.log('User registered:', data);
           alert('Successfully registered!')
-          onClose();
+          onClose()
           router.push('/PrepBot');
         } else {
           alert(`Registration failed: ${data.message}`);
@@ -67,9 +68,10 @@ export default function Modal({ onClose }) {
         });
         const data = await response.json();
         if (response.ok) {
+          localStorage.setItem('userId', data.id);
           console.log('User logged in:', data);
+          onClose()
           alert('Successfully logged in!');
-          onClose();
           router.push('/PrepBot');
         } else {
           alert(`Login failed: ${data.message}`);

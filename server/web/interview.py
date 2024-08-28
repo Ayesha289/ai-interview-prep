@@ -2,10 +2,7 @@ from flask import Blueprint, request, jsonify
 from .prompt import generate_interview_prompt, generate_analysis_prompt
 import os
 from dotenv import load_dotenv
-from langchain.prompts import PromptTemplate
-from langchain.memory import ConversationBufferMemory
-from langchain import LLMChain
-from langchain_openai import ChatOpenAI 
+import google.generativeai as genai
 from .model import Interview
 from . import mongo
 from bson.objectid import ObjectId
@@ -29,10 +26,8 @@ def initialize_conversation():
     except ValueError:
         return jsonify({'error': 'Years of experience must be an integer'}), 400
 
-    # Generate the prompt
     bot_prompt = generate_interview_prompt(role, years_of_experience)
 
-    # Create an interview instance and save it to the database
     interview_instance = {
         'user_id': user_id,
         'prompt': bot_prompt,
@@ -45,83 +40,49 @@ def initialize_conversation():
 
     return jsonify({"message": "Conversation initialized", "interview_id": str(interview.get_interview_id())})
 
-@interview.route('/conversation', methods=['POST'])
-def conversation():
-    data = request.json
-    conversation_history = []
-
-    if not data or 'message' not in data:
-        return jsonify({'error': 'Invalid input'}), 400
-
-    user_input = data['message']
-    interview_id = data['interview_id']
-
-    query = {"_id": ObjectId(interview_id)}
-    filter = {"prompt": 1}
-    details = mongo.db.interviews.find_one(query, filter)
-    bot_prompt = details['prompt']
-
-    # Create a prompt template
-    template = bot_prompt + """
-
-    Previous conversation:
-    {chat_history}
-
-    New human question: {question}
-    Response:"""
-
-    prompt = PromptTemplate.from_template(template)
-    memory = ConversationBufferMemory(memory_key="chat_history")
-
-    llm = ChatOpenAI(
-        base_url="https://openrouter.ai/api/v1",
-        api_key=os.getenv("OPENROUTER_API_KEY"),
-        temperature=1, 
-        model_name='meta-llama/llama-3.1-8b-instruct:free'
-    )
-
-    conversation_chain = LLMChain(
-        llm=llm,
-        prompt=prompt,
-        verbose=True, 
-        memory=memory
-    )
-
-
-    if user_input.lower() == "bye":
-        bot_response = conversation_chain.run({"question": "Send a friendly goodbye note and give a nice short sweet compliment based on the conversation."})
-        conversation_history.append({"user": "Goodbye", "bot": bot_response})
-        return jsonify({"message": bot_response, "conversation_history": conversation_history})
-    
-    else:
-        bot_response = conversation_chain.run({"question": user_input})
-        conversation_history.append({"user": user_input, "bot": bot_response})
-        return jsonify({"message": bot_response, "conversation_history": conversation_history})
-
 @interview.route('/analysis', methods=['POST'])
 def analysis():
     data = request.json
 
-    if not data or 'conversation' not in data:
+    if not data or 'conversation' not in data or 'interview_id' not in data:
         return jsonify({'error': 'Invalid input'}), 400
-    
+
     conversation = data['conversation']
+    interview_id = data['interview_id']
     prompt = generate_analysis_prompt(conversation)
-    
-    client = ChatOpenAI(
-        base_url="https://openrouter.ai/api/v1",
-        api_key=os.getenv("OPENROUTER_API_KEY"),
-        temperature=1, 
-        model_name='meta-llama/llama-3.1-8b-instruct:free'
+
+    genai.configure(api_key=os.environ["API_KEY"])
+    model = genai.GenerativeModel('gemini-1.5-flash')
+    response = model.generate_content(prompt)
+
+    formatted_response = format_response_text(response.text)
+
+    result = mongo.db.interviews.find_one_and_update(
+        {"_id": ObjectId(interview_id)},  
+        {"$set": {"result": formatted_response}}, 
+        return_document=True
     )
 
-    completion = client.chat.completions.create(
-        model="meta-llama/llama-3.1-8b-instruct:free",
-        messages=[
-            {
-                "role": "user",
-                "content": prompt,
-            },
-        ],
-    )
-    return jsonify({"response": (completion.choices[0].message.content)})
+    if not result:
+        return jsonify({"error": "Interview not found or update failed"}), 404
+
+    return jsonify({"response": formatted_response})
+
+def format_response_text(text):
+    # Replace newlines with <br> tags
+    text = text.replace('\n', '<br>')
+    
+    # Convert Markdown headers to HTML headers
+    text = text.replace('## ', '<h2>').replace('**Final Evaluation Score:**', '</h2><strong>Final Evaluation Score:</strong>')
+    
+    # Convert Markdown bold to HTML bold
+    text = text.replace('**', '<strong>').replace('</h2><strong>Final Evaluation Score:</strong>', '<h2>Final Evaluation Score:</h2><strong>')
+    
+    # Convert markdown list items to HTML list items
+    text = text.replace('* ', '<li>').replace('<br><li>', '<br><ul><li>').replace('<br>**Score:', '</li></ul><br>**Score:')
+    
+    # Make sure every <li> is closed properly
+    text = text.replace('<br>**Overall Evaluation:**', '</li></ul><br><strong>Overall Evaluation:</strong>')
+    
+    return text
+
