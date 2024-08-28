@@ -6,7 +6,7 @@ from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 from flask_cors import CORS
 from bson.objectid import ObjectId
-from .model import User
+from .model import User, Interview
 import os
 
 load_dotenv()
@@ -37,7 +37,7 @@ def create_app():
     from .auth import auth
     from .interview import interview
 
-    app.register_blueprint(interview, url_prefix='/interview')
+    app.register_blueprint(interview, url_prefix='/api')
     app.register_blueprint(auth, url_prefix='/auth')
 
     login_manager = LoginManager()

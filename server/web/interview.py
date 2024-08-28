@@ -1,28 +1,29 @@
 from flask import Blueprint, request, jsonify
-from .prompt import generate_interview_prompt
-import speech_recognition as sr
+from .prompt import generate_interview_prompt, generate_analysis_prompt
 import os
 from dotenv import load_dotenv
-import pyttsx3
 from langchain.prompts import PromptTemplate
 from langchain.memory import ConversationBufferMemory
 from langchain import LLMChain
 from langchain_openai import ChatOpenAI 
+from .model import Interview
+from . import mongo
+from bson.objectid import ObjectId
 
 load_dotenv()
 
 interview = Blueprint('interview', __name__)
 
-@interview.route('/conversation', methods=['POST'])
-def conversation():
+@interview.route('/initialize', methods=['POST'])
+def initialize_conversation():
     data = request.json
-    conversation_history = []
     
     # Validate input
-    if not data or 'role' not in data or 'years_of_experience' not in data:
+    if not data or 'role' not in data or 'years_of_experience' not in data or 'user_id' not in data:
         return jsonify({'error': 'Invalid input'}), 400
     
     role = data['role']
+    user_id = data['user_id']
     try:
         years_of_experience = int(data['years_of_experience'])
     except ValueError:
@@ -31,12 +32,34 @@ def conversation():
     # Generate the prompt
     bot_prompt = generate_interview_prompt(role, years_of_experience)
 
-    llm = ChatOpenAI(
-        base_url="https://openrouter.ai/api/v1",
-        api_key=os.getenv("OPENROUTER_API_KEY"),
-        temperature=1, 
-        model_name='meta-llama/llama-3.1-8b-instruct:free'
-    )
+    # Create an interview instance and save it to the database
+    interview_instance = {
+        'user_id': user_id,
+        'prompt': bot_prompt,
+        'result': ''
+    }
+
+    inserted_id = mongo.db.interviews.insert_one(interview_instance).inserted_id
+    interview_data = mongo.db.interviews.find_one({"_id": ObjectId(inserted_id)})
+    interview = Interview(interview_data)
+
+    return jsonify({"message": "Conversation initialized", "interview_id": str(interview.get_interview_id())})
+
+@interview.route('/conversation', methods=['POST'])
+def conversation():
+    data = request.json
+    conversation_history = []
+
+    if not data or 'message' not in data:
+        return jsonify({'error': 'Invalid input'}), 400
+
+    user_input = data['message']
+    interview_id = data['interview_id']
+
+    query = {"_id": ObjectId(interview_id)}
+    filter = {"prompt": 1}
+    details = mongo.db.interviews.find_one(query, filter)
+    bot_prompt = details['prompt']
 
     # Create a prompt template
     template = bot_prompt + """
@@ -50,6 +73,13 @@ def conversation():
     prompt = PromptTemplate.from_template(template)
     memory = ConversationBufferMemory(memory_key="chat_history")
 
+    llm = ChatOpenAI(
+        base_url="https://openrouter.ai/api/v1",
+        api_key=os.getenv("OPENROUTER_API_KEY"),
+        temperature=1, 
+        model_name='meta-llama/llama-3.1-8b-instruct:free'
+    )
+
     conversation_chain = LLMChain(
         llm=llm,
         prompt=prompt,
@@ -57,60 +87,41 @@ def conversation():
         memory=memory
     )
 
-    engine = pyttsx3.init()
 
-    # Configure voice (optional)
-    voices = engine.getProperty('voices')
-    engine.setProperty('voice', voices[0].id)
-
-    # Set properties (optional)
-    engine.setProperty('rate', 180)
-    engine.setProperty('volume', 0.9)
-
-    recognizer = sr.Recognizer()
-
-    def listen():
-        with sr.Microphone() as source:
-            print("Say something...")
-            audio = recognizer.listen(source)
-
-        try:
-            text = recognizer.recognize_google(audio)   # speech to text
-            return text
-        except:
-            print("Could not understand audio")
-
-    def prompt_model(text):
-        # Prompt the LLM chain
-        response = conversation_chain.run({"question": text})
-        return response
-
-    def respond(model_response):
-        # Run the speech synthesis
-        engine.say(model_response)
-        engine.runAndWait()
-
-    def conversation():
-        user_input = ""
-        while True:
-            user_input = listen()
-            if user_input is None:
-                user_input = listen()
-
-            elif "bye" in user_input.lower():
-                bot_response = conversation_chain.run({"question": "Send a friendly goodbye note and give a nice short sweet compliment based on the conversation."})
-                respond(bot_response)
-                conversation_history.append({"user": "Goodbye", "bot": bot_response})
-                return
-            
-            else:
-                bot_response = prompt_model(user_input)
-                respond(bot_response)
-                conversation_history.append({"user": user_input, "bot": bot_response})
+    if user_input.lower() == "bye":
+        bot_response = conversation_chain.run({"question": "Send a friendly goodbye note and give a nice short sweet compliment based on the conversation."})
+        conversation_history.append({"user": "Goodbye", "bot": bot_response})
+        return jsonify({"message": bot_response, "conversation_history": conversation_history})
     
-    # Start the conversation
-    respond(conversation_chain.run({"question": "Greet me in a friendly way"}))
-    conversation()
+    else:
+        bot_response = conversation_chain.run({"question": user_input})
+        conversation_history.append({"user": user_input, "bot": bot_response})
+        return jsonify({"message": bot_response, "conversation_history": conversation_history})
 
-    # Return the conversation history as JSON
-    return jsonify({"conversation_history": conversation_history})
+@interview.route('/analysis', methods=['POST'])
+def analysis():
+    data = request.json
+
+    if not data or 'conversation' not in data:
+        return jsonify({'error': 'Invalid input'}), 400
+    
+    conversation = data['conversation']
+    prompt = generate_analysis_prompt(conversation)
+    
+    client = ChatOpenAI(
+        base_url="https://openrouter.ai/api/v1",
+        api_key=os.getenv("OPENROUTER_API_KEY"),
+        temperature=1, 
+        model_name='meta-llama/llama-3.1-8b-instruct:free'
+    )
+
+    completion = client.chat.completions.create(
+        model="meta-llama/llama-3.1-8b-instruct:free",
+        messages=[
+            {
+                "role": "user",
+                "content": prompt,
+            },
+        ],
+    )
+    return jsonify({"response": (completion.choices[0].message.content)})

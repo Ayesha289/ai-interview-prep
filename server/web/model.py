@@ -1,10 +1,15 @@
 from flask_login import UserMixin
 from bson.objectid import ObjectId
 
-# class Evaluation(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     result = db.Column(db.String(5000))
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+class Interview:
+    def __init__(self, interview_data):
+        self.id = str(interview_data.get('_id'))
+        self.user_id = interview_data.get('user_id')
+        self.prompt = interview_data.get('prompt')
+        self.result = interview_data.get('result')
+
+    def get_interview_id(self):
+        return str(self.id)
 
 class User(UserMixin):
     def __init__(self, user_data):
