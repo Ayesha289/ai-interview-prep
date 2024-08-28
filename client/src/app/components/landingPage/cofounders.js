@@ -6,8 +6,8 @@ export default function CoFounders() {
     {
       name: 'Athikash',
       role: 'Frontend Developer & CEO',
-      image: '/path-to-image/rishabh.png',
-      linkedin: 'https://www.linkedin.com/in/rishabh-gupta/',
+      image: '/assets/me.jpg',
+      linkedin: 'https://www.linkedin.com/in/athikash-jeyaganthan-283580231/',
     },
     {
       name: 'Ayesha Mulani',

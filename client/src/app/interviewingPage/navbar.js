@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import Image from "next/image";
-import Modal from "./modal";
+import Modal from "../components/landingPage/modal";
 import { useState, useEffect } from "react";
 
 export default function Navbar() {
@@ -28,12 +28,6 @@ export default function Navbar() {
           </div>
           <div className="hidden md:block">
             <div className="ml-4 flex items-center space-x-4">
-              <button
-                onClick={showDialog}
-                className="text-white font-medium p-3 rounded-md hover:bg-cyan-500 hover:text-black transition duration-300 ease-in-out"
-              >
-                Join Now!
-              </button>
             </div>
           </div>
         </div>
