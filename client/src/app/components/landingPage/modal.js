@@ -26,7 +26,7 @@ export default function Modal({ onClose }) {
         return;
       }
       try {
-        const response = await fetch('http://127.0.0.1:5000/auth/register', {
+        const response = await fetch('https://ai-interview-sage.vercel.app/auth/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export default function Modal({ onClose }) {
       }
     } else {
       try {
-        const response = await fetch('http://127.0.0.1:5000/auth/login', {
+        const response = await fetch('https://ai-interview-sage.vercel.app/auth/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

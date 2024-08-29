@@ -31,7 +31,7 @@ export default function JobRoleModal() {
       };
     
       try {
-        const response = await fetch('http://127.0.0.1:5000/api/initialize', {
+        const response = await fetch('https://ai-interview-sage.vercel.app/api/initialize', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -60,11 +60,10 @@ def analysis():
     response = model.generate_content(prompt)
 
     formatted_response = format_response_text(response.text)
-    format_text = format_response(response)
 
     result = mongo.db.interviews.find_one_and_update(
         {"_id": ObjectId(interview_id)},  
-        {"$set": {"result": format_text}}, 
+        {"$set": {"result": formatted_response}}, 
         return_document=True
     )
 
@@ -88,24 +87,5 @@ def format_response_text(text):
     
     # Make sure every <li> is closed properly
     text = text.replace('<br>**Overall Evaluation:**', '</li></ul><br><strong>Overall Evaluation:</strong>')
-    
-    return text
-
-
-def format_response(text):
-    # Replace newlines with <br> tags
-    text = text.replace('\n', '')
-    
-    # Convert Markdown headers to HTML headers
-    text = text.replace('## ', '').replace('**Final Evaluation Score:**', 'Final Evaluation Score:')
-    
-    # Convert Markdown bold to HTML bold
-    text = text.replace('**', '').replace('Final Evaluation Score:', 'Final Evaluation Score:')
-    
-    # Convert markdown list items to HTML list items
-    text = text.replace('* ', '').replace('<br><Score:>', '').replace('<br>**Score:', 'Score:')
-    
-    # Make sure every <Overall> is closed properly
-    text = text.replace('<br>**Overall Evaluation:**', 'Overall Evaluation:')
     
     return text
