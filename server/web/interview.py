@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_cors import CORS, cross_origin
 from .prompt import generate_interview_prompt, generate_analysis_prompt
 import os
 from dotenv import load_dotenv
@@ -10,8 +11,10 @@ from bson.objectid import ObjectId
 load_dotenv()
 
 interview = Blueprint('interview', __name__)
+CORS(interview, resources={r"/*": {"origins": "*"}})
 
 @interview.route('/initialize', methods=['POST'])
+@cross_origin(allow_headers=['Content-Type'])
 def initialize_conversation():
     data = request.json
     
@@ -41,6 +44,7 @@ def initialize_conversation():
     return jsonify({"message": "Conversation initialized", "interview_id": str(interview.get_interview_id())})
 
 @interview.route('/analysis', methods=['POST'])
+@cross_origin(allow_headers=['Content-Type'])
 def analysis():
     data = request.json
 
@@ -56,10 +60,11 @@ def analysis():
     response = model.generate_content(prompt)
 
     formatted_response = format_response_text(response.text)
+    format_text = format_response(response)
 
     result = mongo.db.interviews.find_one_and_update(
         {"_id": ObjectId(interview_id)},  
-        {"$set": {"result": formatted_response}}, 
+        {"$set": {"result": format_text}}, 
         return_document=True
     )
 
@@ -86,3 +91,21 @@ def format_response_text(text):
     
     return text
 
+
+def format_response(text):
+    # Replace newlines with <br> tags
+    text = text.replace('\n', '')
+    
+    # Convert Markdown headers to HTML headers
+    text = text.replace('## ', '').replace('**Final Evaluation Score:**', 'Final Evaluation Score:')
+    
+    # Convert Markdown bold to HTML bold
+    text = text.replace('**', '').replace('Final Evaluation Score:', 'Final Evaluation Score:')
+    
+    # Convert markdown list items to HTML list items
+    text = text.replace('* ', '').replace('<br><Score:>', '').replace('<br>**Score:', 'Score:')
+    
+    # Make sure every <Overall> is closed properly
+    text = text.replace('<br>**Overall Evaluation:**', 'Overall Evaluation:')
+    
+    return text
