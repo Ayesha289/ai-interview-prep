@@ -18,7 +18,7 @@ export default function InterviewDashboard() {
   };
 
   const viewSpecificInterviews = () => {
-    router.push("/interview");
+    router.push("/interview-info");
   };
 
   const data = {
@@ -35,7 +35,7 @@ export default function InterviewDashboard() {
   return (
     <>
       <Navbar />
-      <div className="p-6">
+      <div className="p-6 bg-slate-950">
         <h1 className="text-3xl mt-4 text-center font-bold mb-6">
           Top Four Interviews
         </h1>

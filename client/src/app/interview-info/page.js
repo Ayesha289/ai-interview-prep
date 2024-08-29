@@ -20,12 +20,15 @@ export default function Interview() {
   return (
     <>
       <Navbar />
+      <main className="bg-slate-400">
       <div className="grid-cols-1 m-5">
         <div className="bg-[#06121c] p-5 rounded-xl w-full h-auto mb-6">
           <ChartComponent data={data} />
         </div>
         <BoxContainer />
       </div>
+      </main>
+      
     </>
   );
 }
