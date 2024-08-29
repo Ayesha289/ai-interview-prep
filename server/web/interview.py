@@ -41,7 +41,7 @@ def initialize_conversation():
     interview_data = mongo.db.interviews.find_one({"_id": ObjectId(inserted_id)})
     interview = Interview(interview_data)
 
-    return jsonify({"message": "Conversation initialized", "interview_id": str(interview.get_interview_id())})
+    return jsonify({"message": "Conversation initialized", "interview_id": str(interview.get_interview_id()), "prompt": bot_prompt})
 
 @interview.route('/analysis', methods=['POST'])
 @cross_origin(allow_headers=['Content-Type'])

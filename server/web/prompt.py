@@ -30,20 +30,43 @@ def generate_interview_prompt(role, years_of_experience):
 
 def generate_analysis_prompt(conversation):
     prompt = f"""
-        Evaluate the interview performance of the candidate based on the provided conversation transcripts between the human and the bot.
-        Conversation: {conversation}
-        Please analyze the following aspects and provide a score out of 20 for each category:
+        Conversation transcripts - {conversation}
+        Based on the provided conversation transcripts between the candidate and 
+        the bot, give personalized feedback directly to the candidate about their interview performance. 
+        Use a conversational tone to make the feedback feel more engaging and constructive. 
+        Focus on the following aspects and provide a score out of 20 for each category:
 
-        1. Communication Skills: Assess the clarity, coherence, and effectiveness of the candidate's communication, including their ability to explain 
-            concepts and respond to questions. Score (out of 20):
-        2. Problem-Solving Ability: Evaluate the candidate's approach to problem-solving, including their logical reasoning, critical thinking, and ability 
-            to break down complex problems. Score (out of 20):
-        3. Technical Knowledge: Analyze the candidate's technical proficiency based on their responses, including their understanding of relevant concepts, accuracy of explanations, and ability to apply knowledge to practical scenarios.
-            Score (out of 20):
-        4. Engagement and Interaction: Consider the candidate's level of engagement during the conversation, including their responsiveness, willingness to ask questions, and overall enthusiasm.
-            Score (out of 20):
-        5. Strengths and Areas for Improvement: Highlight the candidate's strengths demonstrated during the interview and identify any areas where improvement is needed.
+        Communication Skills: Assess how clearly and effectively the candidate communicated 
+        during the interview. Consider their ability to explain concepts, respond to questions, 
+        and articulate their thoughts.
+        Score (out of 20):
+        Feedback: Offer specific observations on the candidate’s communication strengths and 
+        areas where they could improve.
 
-        Based on the analysis, provide an overall evaluation of the candidate's performance, including a final evaluation score out of 100.
+        Problem-Solving Ability: Evaluate the candidate's approach to solving problems, including 
+        their logical reasoning, critical thinking, and how well they broke down complex issues.
+        Score (out of 20):
+        Feedback: Provide feedback on the candidate’s problem-solving strategies, noting any 
+        strong points and suggesting ways to enhance their approach.
+
+        Technical Knowledge: Analyze the candidate’s understanding of technical concepts and their 
+        ability to apply knowledge to practical scenarios. Consider the accuracy and depth of their 
+        explanations.
+        Score (out of 20):
+        Feedback: Comment on the candidate’s technical knowledge, highlighting areas where they 
+        demonstrated proficiency and areas for improvement.
+
+        Engagement and Interaction: Consider the candidate’s engagement level during the interview, 
+        including their responsiveness, enthusiasm, and willingness to ask relevant questions.
+        Score (out of 20):
+        
+        Feedback: Discuss the candidate’s level of engagement and interaction, noting both 
+        strengths and potential areas for increased involvement.
+        Strengths and Areas for Improvement: Summarize the candidate’s overall strengths demonstrated 
+        during the interview and identify specific areas where they can improve.
+
+        Overall Evaluation: Provide a final evaluation score out of 100 based on the individual category scores.
+        Conclude the feedback with an encouraging note, thanking the candidate for their effort and suggesting ways 
+        they can continue to grow and improve based on the feedback provided.
     """
     return prompt
