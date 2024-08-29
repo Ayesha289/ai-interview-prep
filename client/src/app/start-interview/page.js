@@ -32,6 +32,7 @@ export default function StartInterview() {
   ]);
 
   const messagesEndRef = useRef(null);
+  const isInitialMount = useRef(true);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -59,10 +60,14 @@ export default function StartInterview() {
     }
   }, [isMicOn]);
 
-  useEffect(() => {
-    if (messages.length && messages[messages.length - 1].role === 'assistant') {
-      const lastMessage = messages[messages.length - 1].content;
-      speakText(lastMessage);
+    useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false; 
+    } else {
+      if (messages.length && messages[messages.length - 1].role === 'assistant') {
+        const lastMessage = messages[messages.length - 1].content;
+        speakText(lastMessage);
+      }
     }
   }, [messages]);
 

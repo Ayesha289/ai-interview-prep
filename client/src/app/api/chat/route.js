@@ -39,9 +39,11 @@ async function getSystemPrompt(id) {
     await client.connect();
     const database = client.db('interview-bot'); 
     const collection = database.collection('interviews'); 
+    const options = {
+        projection: { _id: id, prompt: 1 },
+    };
 
-    // Ensure the id is properly converted to ObjectId if stored that way in MongoDB
-    const document = collection.find({ _id: id });
+    const document = await collection.findOne({}, options);
     const prompt = document.prompt;
     if(prompt)
       return prompt;

@@ -4,7 +4,6 @@ from flask_mail import Mail
 from flask_login import LoginManager
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
-from flask_cors import CORS
 from bson.objectid import ObjectId
 from .model import User, Interview
 import os
@@ -17,8 +16,6 @@ jwt = JWTManager()
 
 def create_app():
     app = Flask(__name__)
-    CORS(app)
-    CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
     app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
     
     # MongoDB configuration

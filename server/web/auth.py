@@ -2,14 +2,17 @@ from flask import Blueprint, request, jsonify, json
 from flask_login import login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from bson.objectid import ObjectId
+from flask_cors import CORS, cross_origin
 
 from . import mongo, mail
 from .mail import welcome_user
 from .model import User
 
 auth = Blueprint('auth', __name__)
+CORS(auth, resources={r"/*": {"origins": "*"}})
 
 @auth.route('/login', methods=['POST'])
+@cross_origin(allow_headers=['Content-Type'])
 def login():
     data = json.loads(request.data)
     try:
@@ -25,6 +28,7 @@ def login():
         return jsonify({"error": str(e)})
 
 @auth.route('/register', methods=['POST'])
+@cross_origin(allow_headers=['Content-Type'])
 def register():
     data = json.loads(request.data)
     try:
@@ -54,6 +58,7 @@ def register():
         return jsonify({"error": 'An error occurred: ' + str(e)})
 
 @auth.route('/logout', methods=['GET'])
+@cross_origin()
 @login_required
 def logout():
     try:
