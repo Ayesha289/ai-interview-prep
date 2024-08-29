@@ -46,6 +46,7 @@ export default function JobRoleModal() {
           // Make sure data has interview_id before proceeding
           if (data && data.interview_id) {
             localStorage.setItem('interviewId', data.interview_id);
+            localStorage.setItem('prompt', data.prompt);
             router.push('/start-interview');
           } else {
             alert('Error: Interview ID not received from server.');

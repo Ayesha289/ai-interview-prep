@@ -105,9 +105,9 @@ export default function StartInterview() {
     setText('');
 
     try {
-      const interviewId = localStorage.getItem('interviewId');
-      if (!interviewId) {
-        console.error('Interview ID is missing in localStorage.');
+      const prompt = localStorage.getItem('prompt');
+      if (!prompt) {
+        console.error('Prompt is missing in localStorage.');
         setIsLoading(false);
         return;
       }
@@ -116,7 +116,7 @@ export default function StartInterview() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          interviewId,
+          prompt,
           messages: [...messages, { role: 'user', content: text }],
         }),
       });
