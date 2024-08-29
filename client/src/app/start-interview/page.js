@@ -2,16 +2,18 @@
 import 'regenerator-runtime/runtime';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Box, Button, Stack, IconButton, TextField } from '@mui/material';
+import { Box, Button, Stack, IconButton, TextField, Paper } from '@mui/material';
 import { Mic, MicOff, Videocam, VideocamOff, ExitToApp } from '@mui/icons-material';
 import Webcam from 'react-webcam';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { useRouter } from 'next/navigation';
 import ExitConfirmationModal from './modal';
+import Navbar from './navbar';
+import Footer from '../components/landingPage/footer';
 
 export default function StartInterview() {
   const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition();
-  const router = useRouter(); // Use the useRouter hook to programmatically navigate
+  const router = useRouter();
 
   const [messages, setMessages] = useState([
     {
@@ -24,12 +26,8 @@ export default function StartInterview() {
   const [isMicOn, setIsMicOn] = useState(false);
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [text, setText] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
-
-  // Initialize conversation history with the initial message from the assistant
-  const [conversationHistory, setConversationHistory] = useState([
-    { speaker: 'bot', message: "Hi! I'm the AI-based interviewer. Can you tell me a bit about yourself?" },
-  ]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [conversationHistory, setConversationHistory] = useState([{ speaker: 'bot', message: "Hi! I'm the AI-based interviewer. Can you tell me a bit about yourself?" }]);
 
   const messagesEndRef = useRef(null);
   const isInitialMount = useRef(true);
@@ -60,9 +58,9 @@ export default function StartInterview() {
     }
   }, [isMicOn]);
 
-    useEffect(() => {
+  useEffect(() => {
     if (isInitialMount.current) {
-      isInitialMount.current = false; 
+      isInitialMount.current = false;
     } else {
       if (messages.length && messages[messages.length - 1].role === 'assistant') {
         const lastMessage = messages[messages.length - 1].content;
@@ -98,42 +96,37 @@ export default function StartInterview() {
       { role: 'assistant', content: '' },
     ]);
 
-    // Add user's message to conversation history
     setConversationHistory((history) => [
       ...history,
       { speaker: 'person', message: text },
     ]);
 
-    resetTranscript(); // Clear the transcript when loading starts
-    setText(''); // Clear the input text field immediately after sending
+    resetTranscript();
+    setText('');
 
     try {
-      const interviewId = localStorage.getItem('interviewId'); // Get interviewId from localStorage
-
+      const interviewId = localStorage.getItem('interviewId');
       if (!interviewId) {
         console.error('Interview ID is missing in localStorage.');
         setIsLoading(false);
         return;
       }
+
       const response = await fetch('/api/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           interviewId,
-          messages: [...messages, { role: 'user', content: text }]
-        })
+          messages: [...messages, { role: 'user', content: text }],
+        }),
       });
 
       const data = await response.json();
-
       setMessages((messages) => [
         ...messages.slice(0, messages.length - 1),
         { role: 'assistant', content: data.message },
       ]);
 
-      // Add assistant's message to conversation history
       setConversationHistory((history) => [
         ...history,
         { speaker: 'bot', message: data.message },
@@ -153,109 +146,76 @@ export default function StartInterview() {
   };
 
   const handleExitInterview = () => {
-    setIsModalOpen(true); // Open the modal when "Exit Interview" is clicked
+    setIsModalOpen(true);
   };
 
   const handleConfirmExit = () => {
-    localStorage.setItem('conversationHistory', JSON.stringify(conversationHistory)); // Save to local storage
-    setConversationHistory([]); // Clear the conversation history
-    setIsModalOpen(false); // Close the modal
-    router.push('/interview-result'); // Redirect to the interview results page
+    localStorage.setItem('conversationHistory', JSON.stringify(conversationHistory));
+    setConversationHistory([]);
+    setIsModalOpen(false);
+    router.push('/interview-result');
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false); // Close the modal without any action
+    setIsModalOpen(false);
   };
 
   return (
-    <Box
-      width="100vw"
-      height="100vh"
-      display="flex"
-      justifyContent="flex-end"
-      alignItems="center"
-      overflow="hidden"
-    >
-      {isCameraOn && (
-        <Webcam
-          audio={false}
-          width="100%"
-          height="auto"
-          sx={{ p: 2 }}
-        />
-      )}
-      <Stack
-        direction={'column'}
-        width="400px"
-        minWidth="400px"
-        height="550px"
-        border="1px solid black"
-        p={2}
-        spacing={3}
-        sx={{ m: 2 }}
-      >
-        <Stack
-          direction={'column'}
-          spacing={2}
-          flexGrow={1}
-          overflow="auto"
-          maxHeight="100%"
-        >
-          {messages.map((message, index) => (
-            <Box
-              key={index}
-              display="flex"
-              justifyContent={
-                message.role === 'assistant' ? 'flex-start' : 'flex-end'
-              }
-            >
-              <Box
-                bgcolor={
-                  message.role === 'assistant'
-                    ? 'primary.main'
-                    : 'secondary.main'
-                }
-                color="white"
-                borderRadius={16}
-                p={3}
-              >
-                {message.content}
+    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', bgcolor: '#121212' }}>
+      <Navbar />
+
+      <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, bgcolor: 'black', borderRadius: 2, boxShadow: 3, overflow: 'hidden', width: '100%', maxWidth: 1400 }}>
+          <Box sx={{ flex: 2, display: 'flex', flexDirection: 'column', p: 3 }}>
+            <Paper elevation={3} sx={{ flex: 1, overflowY: 'auto', p: 2, bgcolor: '#1e1e1e' }}>
+              {messages.map((message, index) => (
+                <Box key={index} sx={{ display: 'flex', justifyContent: message.role === 'assistant' ? 'flex-start' : 'flex-end', mb: 2 }}>
+                  <Box sx={{ bgcolor: message.role === 'assistant' ? 'primary.main' : 'secondary.main', color: 'white', borderRadius: 2, p: 2 }}>
+                    {message.content}
+                  </Box>
+                </Box>
+              ))}
+              <div ref={messagesEndRef} />
+            </Paper>
+
+            <Stack direction="row" spacing={2} mt={2}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Type your response here..."
+                sx={{ bgcolor: '#1e1e1e', input: { color: 'white' } }}
+              />
+              <Button variant="contained" onClick={sendMessage} disabled={isLoading} sx={{ bgcolor: '#00bcd4' }}>
+                Send
+              </Button>
+            </Stack>
+          </Box>
+
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
+            {isCameraOn && (
+              <Box sx={{ width: '100%', mb: 2 }}>
+                <Webcam audio={false} width="100%" height="auto" />
               </Box>
-            </Box>
-          ))}
-          <div ref={messagesEndRef} />
-        </Stack>
-        <Stack direction={'row'} spacing={2}>
-          <TextField
-            fullWidth
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="Your audio transcripts..."
-          />
-          <Button
-            variant="contained"
-            onClick={sendMessage}
-            disabled={isLoading}
-          >
-            Send
-          </Button>
-        </Stack>
-        <Stack direction={'row'} spacing={2} justifyContent="space-between">
-          <IconButton onClick={toggleMic}>
-            {isMicOn ? <Mic /> : <MicOff />}
-          </IconButton>
-          <IconButton onClick={toggleCamera}>
-            {isCameraOn ? <Videocam /> : <VideocamOff />}
-          </IconButton>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={handleExitInterview} // Open the exit confirmation modal
-          >
-            Exit Interview <ExitToApp />
-          </Button>
-        </Stack>
-      </Stack>
+            )}
+
+            <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 2 }}>
+              <IconButton onClick={toggleMic} sx={{ color: isMicOn ? '#00bcd4' : '#f44336' }}>
+                {isMicOn ? <Mic /> : <MicOff />}
+              </IconButton>
+              <IconButton onClick={toggleCamera} sx={{ color: isCameraOn ? '#00bcd4' : '#f44336' }}>
+                {isCameraOn ? <Videocam /> : <VideocamOff />}
+              </IconButton>
+              <Button variant="contained" color="error" onClick={handleExitInterview} sx={{ bgcolor: '#f44336' }}>
+                Exit Interview <ExitToApp />
+              </Button>
+            </Stack>
+          </Box>
+        </Box>
+      </Box>
+
+      <Footer />
 
       <ExitConfirmationModal
         open={isModalOpen}
@@ -265,3 +225,8 @@ export default function StartInterview() {
     </Box>
   );
 }
+
+
+
+
+
