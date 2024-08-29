@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Navbar from './navbar'; 
 
 export default function AnalysisPage() {
   const [responseHtml, setResponseHtml] = useState('');
@@ -52,35 +53,22 @@ export default function AnalysisPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start">
-      {/* Top Container for Preppy Text and Button */}
-      <div className="w-full flex justify-between items-center p-6 bg-white shadow-md">
-        {/* "Preppy" Text in the Top Left Corner */}
-        <div className="text-xl font-bold text-gray-700">
-          Preppy
-        </div>
-
-        {/* Button for Navigation */}
-        <button
-          className="bg-blue-500 text-white font-bold py-2 px-4 rounded-full shadow-lg hover:bg-blue-600 transition duration-300"
-          onClick={() => router.push('/PrepBot')}
-        >
-          Back to Dashboard
-        </button>
-      </div>
-
-      {/* Main Content Container */}
-      {loading ? (
-        <div className="flex flex-col justify-center items-center h-screen">
-          <div className="animate-spin border-t-4 border-blue-500 border-solid w-12 h-12 rounded-full mb-4"></div>
-          <p className="text-gray-700 text-lg font-medium">Fetching your results...</p>
-        </div>
-      ) : (
-        // Content Container with Rounded Corners and Shadow
-        <div className="bg-white rounded-xl shadow-md p-8 m-6 max-w-4xl w-full">
-          <div className="prose max-w-full" dangerouslySetInnerHTML={{ __html: responseHtml }} />
-        </div>
-      )}
+    <div className="flex flex-col min-h-screen bg-black text-white">
+      <Navbar />
+      <main className="flex-1 p-6">
+        {/* Main Content Container */}
+        {loading ? (
+          <div className="flex flex-col justify-center items-center h-full">
+            <div className="animate-spin border-t-4 border-blue-500 border-solid w-12 h-12 rounded-full mb-4"></div>
+            <p className="text-gray-400 text-lg font-medium">Fetching your results...</p>
+          </div>
+        ) : (
+          // Content Container with Rounded Corners and Shadow
+          <div className="bg-gray-800 rounded-xl shadow-md p-8 max-w-4xl mx-auto">
+            <div className="prose text-white max-w-full" dangerouslySetInnerHTML={{ __html: responseHtml }} />
+          </div>
+        )}
+      </main>
     </div>
   );
 }
