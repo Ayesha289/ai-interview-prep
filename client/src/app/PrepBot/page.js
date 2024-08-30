@@ -94,13 +94,13 @@ export default function InterviewDashboard() {
             </p>
             
             <ol className="text-white text-left list-decimal pl-6 space-y-2">
-              <li>Click on the "New Interview" button.</li>
+              <li>Click on the &quot;New Interview&quot; button.</li>
               <li>Enter your job role and the years of experience you have relevant to your job role.</li>
               <li>
                 You will be redirected to the interview dashboard where it is requested to turn on the mic and camera before proceeding to the interview.
               </li>
               <li>
-                After you feel you are done or want to end the interview, just click "Exit Interview" and your results and detailed analysis will be given to you.
+                After you feel you are done or want to end the interview, just click &quot;Exit Interview&quot; and your results and detailed analysis will be given to you.
               </li>
               <li>
                 After that, you will be able to see your strong points in the dashboard based on the analysis.
