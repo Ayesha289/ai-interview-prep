@@ -7,6 +7,7 @@ import google.generativeai as genai
 from .model import Interview
 from . import mongo
 from bson.objectid import ObjectId
+import re
 
 load_dotenv()
 
@@ -18,7 +19,6 @@ CORS(interview, resources={r"/*": {"origins": "*"}})
 def initialize_conversation():
     data = request.json
     
-    # Validate input
     if not data or 'role' not in data or 'years_of_experience' not in data or 'user_id' not in data:
         return jsonify({'error': 'Invalid input'}), 400
     
@@ -43,6 +43,24 @@ def initialize_conversation():
 
     return jsonify({"message": "Conversation initialized", "interview_id": str(interview.get_interview_id()), "prompt": bot_prompt})
 
+@interview.route('/scores', methods=['POST'])
+@cross_origin(allow_headers=['Content-Type'])
+def scores():
+    data = request.json
+
+    if not data or 'user_id' not in data:
+        return jsonify({'error': 'Invalid input'}), 400
+    
+    user_id = data['user_id']
+    interviews = mongo.db.interviews.find({"user_id": user_id})
+    results = []
+
+    for interview in interviews:
+        # Check if the 'result' field exists in the document
+        if 'result' in interview:
+            results.append(interview['result'])
+    return jsonify({"scores": results})
+
 @interview.route('/analysis', methods=['POST'])
 @cross_origin(allow_headers=['Content-Type'])
 def analysis():
@@ -58,34 +76,39 @@ def analysis():
     genai.configure(api_key=os.environ["API_KEY"])
     model = genai.GenerativeModel('gemini-1.5-flash')
     response = model.generate_content(prompt)
-
     formatted_response = format_response_text(response.text)
+
+    scores = {
+        'communication_skills': 0,
+        'problem_solving_ability': 0,
+        'technical_knowledge': 0,
+        'engagement_and_interaction': 0,
+        'overall_evaluation': 0
+    }
+    
+    date = re.findall('\d{2}', formatted_response)
+    for i in range(0, len(date)):
+        date[i] = int(date[i])
+    
+    keys = list(scores.keys())
+
+    for i, key in enumerate(keys):
+        if 2 * i < len(date): 
+            scores[key] = date[2 * i]
 
     result = mongo.db.interviews.find_one_and_update(
         {"_id": ObjectId(interview_id)},  
-        {"$set": {"result": formatted_response}}, 
-        return_document=True
+        {"$set": {"result": scores}}
     )
 
     if not result:
         return jsonify({"error": "Interview not found or update failed"}), 404
-
     return jsonify({"response": formatted_response})
 
 def format_response_text(text):
-    # Replace newlines with <br> tags
     text = text.replace('\n', '<br>')
-    
-    # Convert Markdown headers to HTML headers
     text = text.replace('## ', '<h2>').replace('**Final Evaluation Score:**', '</h2><strong>Final Evaluation Score:</strong>')
-    
-    # Convert Markdown bold to HTML bold
     text = text.replace('**', '<strong>').replace('</h2><strong>Final Evaluation Score:</strong>', '<h2>Final Evaluation Score:</h2><strong>')
-    
-    # Convert markdown list items to HTML list items
     text = text.replace('* ', '<li>').replace('<br><li>', '<br><ul><li>').replace('<br>**Score:', '</li></ul><br>**Score:')
-    
-    # Make sure every <li> is closed properly
     text = text.replace('<br>**Overall Evaluation:**', '</li></ul><br><strong>Overall Evaluation:</strong>')
-    
     return text
