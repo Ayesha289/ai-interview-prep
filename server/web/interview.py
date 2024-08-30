@@ -56,7 +56,6 @@ def scores():
     results = []
 
     for interview in interviews:
-        # Check if the 'result' field exists in the document
         if 'result' in interview:
             results.append(interview['result'])
     return jsonify({"scores": results})
