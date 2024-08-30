@@ -6,11 +6,6 @@ import { GiMagicPalm } from "react-icons/gi";
 export default function Navbar() {
     const router = useRouter();
 
-    const viewAllInterviews = () => {
-        // Logic to view all interviews
-        router.push('/your-interviews');
-    };
-
     const handleLogout = async () => {
         localStorage.removeItem('userId');
         localStorage.removeItem('interviewId');
@@ -32,7 +27,6 @@ export default function Navbar() {
                     <div className='hidden md:block'>
                         <div className='ml-4 flex items-center space-x-4'>
                             <h3 className='text-xl text-yellow-100 flex items-center gap-2'><GiMagicPalm className='text-4xl text-yellow-300' />Welcome!</h3>
-                            <a onClick={viewAllInterviews} className='text-white cursor-pointer font-medium p-3 rounded-md capitalize hover:bg-cyan-500 hover:text-black transition duration-300 ease-in-out'>all interviews</a>
                             <a onClick={handleLogout} className='text-white font-medium p-3 rounded-md capitalize hover:bg-cyan-500 hover:text-black transition duration-300 ease-in-out cursor-pointer'>Logout</a>
                         </div>
                     </div>
