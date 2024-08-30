@@ -36,13 +36,13 @@ export default function Navbar() {
                   <MenuIcon />
                 </IconButton>
                 {showMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
+                  <div className="absolute right-0 mt-2 w-48 bg-black rounded-md shadow-lg z-50">
                     <ul className="py-1">
                       <li>
-                        <a href="/" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Home</a>
+                        <a href="/" className="block px-4 py-2 text-white hover:bg-gray-800">Home</a>
                       </li>
                       <li>
-                        <a href="/your-interviews" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Your Interviews</a>
+                        <a href="/your-interviews" className="block px-4 py-2 text-white hover:bg-gray-800">Your Interviews</a>
                       </li>
                     </ul>
                   </div>

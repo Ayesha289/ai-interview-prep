@@ -3,18 +3,44 @@ import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, B
 
 function ExitConfirmationModal({ open, onClose, onConfirm }) {
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Exit Interview</DialogTitle>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      PaperProps={{
+        style: {
+          backgroundColor: '#1e1e1e',  
+          color: 'white',  
+        },
+      }}
+    >
+      <DialogTitle sx={{ color: 'white' }}>Exit Interview</DialogTitle> 
       <DialogContent>
-        <DialogContentText>
+        <DialogContentText sx={{ color: 'white' }}>
           Are you sure you want to exit the interview?
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary">
+        <Button
+          onClick={onClose}
+          sx={{
+            color: '#00bcd4',  
+            '&:hover': {
+              backgroundColor: '#0097a7',  
+            },
+          }}
+        >
           No
         </Button>
-        <Button onClick={onConfirm} color="primary" autoFocus>
+        <Button
+          onClick={onConfirm}
+          sx={{
+            color: '#00bcd4',  
+            '&:hover': {
+              backgroundColor: '#0097a7',  
+            },
+          }}
+          autoFocus
+        >
           Yes
         </Button>
       </DialogActions>

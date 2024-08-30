@@ -6,13 +6,11 @@ const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 export async function POST(req) {
   try {
-    const { prompt, messages } = await req.json(); 
-    
-    if (!prompt) {
+    const { systemPrompt, messages } = await req.json();
+
+    if (!systemPrompt) {
       return NextResponse.json({ message: "prompt is required." }, { status: 400 });
     }
-
-    const systemPrompt = prompt;
 
     const generationConfig = {
       stopSequences: ["red"],

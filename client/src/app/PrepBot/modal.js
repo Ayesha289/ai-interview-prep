@@ -15,53 +15,50 @@ export default function JobRoleModal() {
   };
 
   const handleStartInterview = async () => {
-      if (jobRole.trim() === '' || yearsOfExperience.trim() === '') {
-        alert('Please fill out all fields.');
-        return;
-      }
-    
-      setLoading(true); // Set loading state to true
-    
-      const userId = localStorage.getItem('userId'); // Retrieve user_id from localStorage
-    
-      const bodyContent = {
-        role: jobRole,
-        years_of_experience: parseInt(yearsOfExperience), // Ensure this is a number
-        user_id: userId,
-      };
-    
-      try {
-        const response = await fetch('https://ai-interview-sage.vercel.app/api/initialize', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(bodyContent),
-        });
-    
-        if (response.ok) {
-          // Parse the response to JSON
-          const data = await response.json();
-    
-          // Make sure data has interview_id before proceeding
-          if (data && data.interview_id) {
-            localStorage.setItem('interviewId', data.interview_id);
-            localStorage.setItem('prompt', data.prompt);
-            router.push('/start-interview');
-          } else {
-            alert('Error: Interview ID not received from server.');
-          }
-        } else {
-          alert('Failed to initialize interview. Please try again.');
-        }
-      } catch (error) {
-        console.error('Error initializing interview:', error);
-        alert('Error initializing interview. Please try again.');
-      } finally {
-        setLoading(false); // Reset loading state
-      }
+    if (jobRole.trim() === '' || yearsOfExperience.trim() === '') {
+      alert('Please fill out all fields.');
+      return;
+    }
+
+    setLoading(true); 
+
+    const userId = localStorage.getItem('userId');
+
+    const bodyContent = {
+      role: jobRole,
+      years_of_experience: parseInt(yearsOfExperience), 
+      user_id: userId,
     };
-    
+
+    try {
+      const response = await fetch('https://ai-interview-sage.vercel.app/api/initialize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bodyContent),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data) {
+          localStorage.setItem('interviewId', data.interview_id);
+          localStorage.setItem('prompt', data.prompt);
+          router.push('/start-interview');
+        } else {
+          alert('Error: Interview ID not received from server.');
+        }
+      } else {
+        alert('Failed to initialize interview. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error initializing interview:', error);
+      alert('Error initializing interview. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   return (
     <Modal
@@ -77,13 +74,18 @@ export default function JobRoleModal() {
           left: '50%',
           transform: 'translate(-50%, -50%)',
           width: 400,
-          bgcolor: 'background.paper',
+          bgcolor: '#1e1e1e',
           boxShadow: 24,
           p: 4,
           borderRadius: 2,
         }}
       >
-        <Typography id="job-role-modal-title" variant="h6" component="h2">
+        <Typography
+          id="job-role-modal-title"
+          variant="h6"
+          component="h2"
+          sx={{ color: 'white' }}  
+        >
           Enter Your Job Role and Experience
         </Typography>
         <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }}>
@@ -93,7 +95,24 @@ export default function JobRoleModal() {
             variant="outlined"
             value={jobRole}
             onChange={(e) => setJobRole(e.target.value)}
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 2,
+              input: { color: 'white' },  
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: '#00bcd4',  
+                },
+                '&:hover fieldset': {
+                  borderColor: '#00bcd4', 
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#00bcd4', 
+                },
+              },
+              '& .MuiInputLabel-root': {
+                color: '#00bcd4',  
+              },
+            }}
           />
           <TextField
             fullWidth
@@ -102,14 +121,37 @@ export default function JobRoleModal() {
             value={yearsOfExperience}
             onChange={(e) => setYearsOfExperience(e.target.value)}
             type="number"
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 2,
+              input: { color: 'white' }, 
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: '#00bcd4',  
+                },
+                '&:hover fieldset': {
+                  borderColor: '#00bcd4', 
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#00bcd4',
+                },
+              },
+              '& .MuiInputLabel-root': {
+                color: '#00bcd4',  
+              },
+            }}
           />
           <Button
             variant="contained"
-            color="primary"
             onClick={handleStartInterview}
             fullWidth
-            disabled={loading} // Disable button while loading
+            disabled={loading}
+            sx={{
+              bgcolor: '#00bcd4',
+              color: 'white',
+              '&:hover': {
+                bgcolor: '#0097a7',
+              },
+            }}
           >
             {loading ? 'Loading...' : "Let's Go 🚀"}
           </Button>

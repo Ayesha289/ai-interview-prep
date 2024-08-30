@@ -4,10 +4,13 @@ import Modal from "../components/landingPage/modal";
 import { useState } from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
+import { useRouter } from 'next/navigation'; // Import useRouter for navigation
 
 export default function Navbar() {
   const [showModal, setShowModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const router = useRouter(); // Initialize useRouter
 
   const toggleDialog = () => {
     setShowModal(!showModal);
@@ -15,6 +18,11 @@ export default function Navbar() {
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
+  };
+
+  // Function to navigate to /PrepBot
+  const navigateToDashboard = () => {
+    router.push('/PrepBot');
   };
 
   return (
@@ -26,32 +34,14 @@ export default function Navbar() {
               PREPPYY
             </span>
           </div>
-          <div className="flex items-center space-x-4">
-            <IconButton onClick={toggleMenu} className="text-white md:hidden">
-              <MenuIcon />
-            </IconButton>
-            <div className={`${showMenu ? 'block' : 'hidden'} md:flex ml-4 space-x-4`}>
-              <div className="relative">
-                <IconButton onClick={toggleMenu} className="text-white">
-                  <MenuIcon />
-                </IconButton>
-                {showMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
-                    <ul className="py-1">
-                      <li>
-                        <a href="/" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Home</a>
-                      </li>
-                      <li>
-                        <a href="/your-interviews" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Your Interviews</a>
-                      </li>
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </div>
+          <button
+            className="bg-blue-500 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-blue-600 transition duration-300"
+            onClick={navigateToDashboard} 
+          >
+            Back to Dashboard
+          </button>
           </div>
         </div>
-      </div>
       {showModal && (
         <Modal onClose={toggleDialog} />
       )}

@@ -105,8 +105,8 @@ export default function StartInterview() {
     setText('');
 
     try {
-      const prompt = localStorage.getItem('prompt');
-      if (!prompt) {
+      const systemPrompt = localStorage.getItem('prompt');
+      if (!systemPrompt) {
         console.error('Prompt is missing in localStorage.');
         setIsLoading(false);
         return;
@@ -116,7 +116,7 @@ export default function StartInterview() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          prompt,
+          systemPrompt,
           messages: [...messages, { role: 'user', content: text }],
         }),
       });
@@ -165,8 +165,20 @@ export default function StartInterview() {
       <Navbar />
 
       <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2 }}>
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, bgcolor: 'black', borderRadius: 2, boxShadow: 3, overflow: 'hidden', width: '100%', maxWidth: 1400 }}>
-          <Box sx={{ flex: 2, display: 'flex', flexDirection: 'column', p: 3 }}>
+        {/* Main Container with Flex Direction set to row */}
+        <Box sx={{ display: 'flex', flexDirection: 'row', bgcolor: 'black', borderRadius: 2, boxShadow: 3, overflow: 'hidden', width: '100%', maxWidth: '1400px', height: '450px' }}>
+          
+          {/* Camera Container */}
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', p: 3, borderRight: '1px solid gray', bgcolor: isCameraOn ? 'black' : 'transparent' }}>
+            {isCameraOn ? (
+              <Webcam audio={false} width="100%" height="auto" />
+            ) : (
+              <Box sx={{ width: '100%', height: '100%' }} />
+            )}
+          </Box>
+          
+          {/* Chat Container */}
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', p: 3 }}>
             <Paper elevation={3} sx={{ flex: 1, overflowY: 'auto', p: 2, bgcolor: '#1e1e1e' }}>
               {messages.map((message, index) => (
                 <Box key={index} sx={{ display: 'flex', justifyContent: message.role === 'assistant' ? 'flex-start' : 'flex-end', mb: 2 }}>
@@ -191,15 +203,6 @@ export default function StartInterview() {
                 Send
               </Button>
             </Stack>
-          </Box>
-
-          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
-            {isCameraOn && (
-              <Box sx={{ width: '100%', mb: 2 }}>
-                <Webcam audio={false} width="100%" height="auto" />
-              </Box>
-            )}
-
             <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 2 }}>
               <IconButton onClick={toggleMic} sx={{ color: isMicOn ? '#00bcd4' : '#f44336' }}>
                 {isMicOn ? <Mic /> : <MicOff />}
@@ -225,8 +228,3 @@ export default function StartInterview() {
     </Box>
   );
 }
-
-
-
-
-
