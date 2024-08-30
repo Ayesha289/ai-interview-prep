@@ -1,18 +1,18 @@
 "use client";
-import * as React from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ChartComponent from "../components/PrepBot/reusableChart";
 import Navbar from "../components/PrepBot/navbar";
 import JobRoleModal from "./modal.js"; 
 
 export default function InterviewDashboard() {
-  const [isModalOpen, setIsModalOpen] = React.useState(false); 
-  const [scores, setScores] = React.useState([]); 
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [scores, setScores] = useState([]); 
   const router = useRouter();
 
-  React.useEffect(() => {
-    const user_id = localStorage.getItem('userId');
+  useEffect(() => {
     const fetchScores = async () => {
+      const user_id = localStorage.getItem('userId');
       try {
         const response = await fetch("https://ai-interview-sage.vercel.app/api/scores", {
           method: "POST",
