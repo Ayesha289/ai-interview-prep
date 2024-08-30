@@ -10,9 +10,8 @@ export default function InterviewDashboard() {
   const [scores, setScores] = React.useState([]); 
   const router = useRouter();
 
-  const user_id = localStorage.getItem('userId');
-
   React.useEffect(() => {
+    const user_id = localStorage.getItem('userId');
     const fetchScores = async () => {
       try {
         const response = await fetch("https://ai-interview-sage.vercel.app/api/scores", {
