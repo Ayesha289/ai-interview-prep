@@ -61,7 +61,7 @@ export default function InterviewDashboard() {
               <div
                 key={index}
                 onClick={() => viewSpecificInterviews(score.id)}
-                className="bg-[#06121c] h-auto px-4 rounded-lg shadow-lg shadow-emerald-800 cursor-pointer hover:bg-slate-700 transition duration-300"
+                className="bg-[#06121c] h-auto px-4 rounded-lg shadow-lg shadow-emerald-800 cursor-pointer hover:bg-[#1b2b38] transition duration-300"
               >
                 <h2 className="text-xl text-white font-bold my-4">
                   Interview Performance Overview
