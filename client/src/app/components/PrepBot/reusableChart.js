@@ -62,7 +62,7 @@ const ChartComponent = ({ data }) => {
           }} />}
         </div>
       </Flipped>
-      <div className='flex items-center justify-center' style={{ margin: '20px 0 20px 0' }}>
+      <div style={{ margin: '20px 0 20px 0', zIndex: 1000}}>
         <button className='bg-transparent border-2 text-white mr-2 p-1 rounded-md' onClick={() => setChartType('pie')}>&#8592;</button>
         <button className='bg-transparent border-2 text-white p-1 rounded-md' onClick={() => setChartType('bar')}>&#8594;</button>
       </div>
