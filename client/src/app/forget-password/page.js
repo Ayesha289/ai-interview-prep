@@ -60,7 +60,7 @@ const Page = () => {
           <input
             type="email"
             className="w-full px-3 py-2 border text-black rounded-md focus:outline-none focus:ring focus:ring-cyan-500 mb-4"
-            placeholder="Enter your email"
+            placeholder="Enter your registered email"
             value={email}
             onChange={handleEmailChange}
           />
