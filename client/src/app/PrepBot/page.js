@@ -3,11 +3,11 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ChartComponent from "../components/PrepBot/reusableChart";
 import Navbar from "../components/PrepBot/navbar";
-import JobRoleModal from "./modal.js"; 
+import JobRoleModal from "./modal.js";
 
 export default function InterviewDashboard() {
-  const [isModalOpen, setIsModalOpen] = useState(false); 
-  const [scores, setScores] = useState([]); 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [scores, setScores] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export default function InterviewDashboard() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ user_id: user_id}), 
+          body: JSON.stringify({ user_id: user_id }),
         });
 
         if (!response.ok) {
@@ -37,15 +37,18 @@ export default function InterviewDashboard() {
   }, []);
 
   const startNewInterview = () => {
-    setIsModalOpen(true); 
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {
-    setIsModalOpen(false); 
+    setIsModalOpen(false);
   };
 
-  const viewSpecificInterviews = () => {
-    router.push("/interview-info");
+  const viewSpecificInterviews = (data) => {
+    const queryString = new URLSearchParams({
+      data: JSON.stringify(data),
+    }).toString();
+    router.push(`/interview-info?${queryString}`);
   };
 
   return (
@@ -57,7 +60,22 @@ export default function InterviewDashboard() {
             {scores.map((score, index) => (
               <div
                 key={index}
-                onClick={viewSpecificInterviews}
+                onClick={() => viewSpecificInterviews({
+                  labels: [
+                    "Communication Skills",
+                    "Engagement and Interaction",
+                    "Overall Evaluation",
+                    "Problem Solving Ability",
+                    "Technical Knowledge",
+                  ],
+                  values: [
+                    score.communication_skills,
+                    score.engagement_and_interaction,
+                    score.overall_evaluation,
+                    score.problem_solving_ability,
+                    score.technical_knowledge,
+                  ],
+                })}
                 className="bg-[#06121c] h-auto px-4 rounded-lg shadow-lg shadow-emerald-800 cursor-pointer hover:bg-slate-700 transition duration-300"
               >
                 <h2 className="text-xl text-white font-bold my-4">
@@ -92,7 +110,7 @@ export default function InterviewDashboard() {
             <p className="text-white text-center mb-6">
               All your interview results will be displayed here after you take an interview.
             </p>
-            
+
             <ol className="text-white text-left list-decimal pl-6 space-y-2">
               <li>Click on the &quot;New Interview&quot; button.</li>
               <li>Enter your job role and the years of experience you have relevant to your job role.</li>
@@ -110,7 +128,7 @@ export default function InterviewDashboard() {
         )}
         <button
           className="fixed bottom-6 right-6 bg-blue-500 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-blue-600 transition duration-300"
-          onClick={startNewInterview} 
+          onClick={startNewInterview}
         >
           New Interview
         </button>
