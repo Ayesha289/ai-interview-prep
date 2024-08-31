@@ -44,9 +44,9 @@ export default function InterviewDashboard() {
     setIsModalOpen(false);
   };
 
-  const viewSpecificInterviews = (data) => {
+  const viewSpecificInterviews = (id) => {
     const queryString = new URLSearchParams({
-      data: JSON.stringify(data),
+      id: id,
     }).toString();
     router.push(`/interview-info?${queryString}`);
   };
@@ -60,22 +60,7 @@ export default function InterviewDashboard() {
             {scores.map((score, index) => (
               <div
                 key={index}
-                onClick={() => viewSpecificInterviews({
-                  labels: [
-                    "Communication Skills",
-                    "Engagement and Interaction",
-                    "Overall Evaluation",
-                    "Problem Solving Ability",
-                    "Technical Knowledge",
-                  ],
-                  values: [
-                    score.communication_skills,
-                    score.engagement_and_interaction,
-                    score.overall_evaluation,
-                    score.problem_solving_ability,
-                    score.technical_knowledge,
-                  ],
-                })}
+                onClick={() => viewSpecificInterviews(score.id)}
                 className="bg-[#06121c] h-auto px-4 rounded-lg shadow-lg shadow-emerald-800 cursor-pointer hover:bg-slate-700 transition duration-300"
               >
                 <h2 className="text-xl text-white font-bold my-4">
@@ -91,11 +76,11 @@ export default function InterviewDashboard() {
                       "Technical Knowledge",
                     ],
                     values: [
-                      score.communication_skills,
-                      score.engagement_and_interaction,
-                      score.overall_evaluation,
-                      score.problem_solving_ability,
-                      score.technical_knowledge,
+                      score.scores.communication_skills,
+                      score.scores.engagement_and_interaction,
+                      score.scores.overall_evaluation,
+                      score.scores.problem_solving_ability,
+                      score.scores.technical_knowledge,
                     ],
                   }}
                 />

@@ -34,7 +34,8 @@ def initialize_conversation():
     interview_instance = {
         'user_id': user_id,
         'prompt': bot_prompt,
-        'result': ''
+        'result': '',
+        'scores': '',
     }
 
     inserted_id = mongo.db.interviews.insert_one(interview_instance).inserted_id
@@ -42,6 +43,25 @@ def initialize_conversation():
     interview = Interview(interview_data)
 
     return jsonify({"message": "Conversation initialized", "interview_id": str(interview.get_interview_id()), "prompt": bot_prompt})
+
+@interview.route('/results', methods=['POST'])
+@cross_origin(allow_headers=['Content-Type'])
+def results():
+    data = request.json
+
+    if not data or 'interview_id' not in data:
+        return jsonify({'error': 'Invalid input'}), 400
+    
+    interview_id = data['interview_id']
+    interview_data = mongo.db.interviews.find_one({"_id": ObjectId(interview_id)})
+
+    if not interview_data:
+        return jsonify({"error": "Interview not found"}), 404
+
+    return jsonify({
+        "result": interview_data.get("result"),
+        "scores": interview_data.get("scores")
+    })
 
 @interview.route('/scores', methods=['POST'])
 @cross_origin(allow_headers=['Content-Type'])
@@ -56,8 +76,11 @@ def scores():
     results = []
 
     for interview in interviews:
-        if 'result' in interview:
-            results.append(interview['result'])
+        if 'scores' in interview:
+            results.append({
+                "id": str(interview['_id']),
+                "scores": interview['scores']
+            })
     return jsonify({"scores": results})
 
 @interview.route('/analysis', methods=['POST'])
@@ -96,8 +119,8 @@ def analysis():
             scores[key] = date[2 * i]
 
     result = mongo.db.interviews.find_one_and_update(
-        {"_id": ObjectId(interview_id)},  
-        {"$set": {"result": scores}}
+        {"_id": ObjectId(interview_id)}, 
+        {"$set": {"result": formatted_response, "scores": scores}}
     )
 
     if not result:

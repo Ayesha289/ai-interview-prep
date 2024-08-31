@@ -3,14 +3,44 @@ import * as React from "react";
 import Navbar from "../components/PrepBot/navbar";
 import ChartComponent from "../components/PrepBot/reusableChart";
 import { useRouter, useSearchParams } from 'next/navigation';
-import { FaArrowLeft } from 'react-icons/fa'; // Import the left arrow icon
+import { FaArrowLeft } from 'react-icons/fa'; 
+import { useState, useEffect } from 'react';
 
 export default function Interview() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const data = searchParams.get('data');
+  const interview_id = searchParams.get('interview_id');
+  
+  const [data, setData] = useState(null);
+  const [htmlContent, setHtmlContent] = useState(null);
 
-  const parsedData = data ? JSON.parse(data) : null;
+  useEffect(() => {
+    const fetchInterviewData = async () => {
+      if (interview_id) {
+        try {
+          const response = await fetch("https://ai-interview-sage.vercel.app/api/results", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ interview_id }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch interview data");
+          }
+
+          const result = await response.json();
+          setHtmlContent(result.result);
+          setData(result.scores);
+        } catch (error) {
+          console.error("Error fetching interview data:", error);
+        }
+      }
+    };
+
+    fetchInterviewData();
+  }, [interview_id]);
 
   return (
     <main className="min-h-screen bg-slate-800 relative">
@@ -24,7 +54,32 @@ export default function Interview() {
       </button>
       <div className="grid-cols-1 m-5 mt-20">
         <div className="bg-[#06121c] p-5 rounded-xl w-full h-auto mb-6">
-          {parsedData && <ChartComponent data={parsedData} />}
+          {data && (
+            <ChartComponent
+              data={{
+                labels: [
+                  "Communication Skills",
+                  "Engagement and Interaction",
+                  "Overall Evaluation",
+                  "Problem Solving Ability",
+                  "Technical Knowledge",
+                ],
+                values: [
+                  data.communication_skills,
+                  data.engagement_and_interaction,
+                  data.overall_evaluation,
+                  data.problem_solving_ability,
+                  data.technical_knowledge,
+                ],
+              }}
+            />
+          )}
+        </div>
+        <div className="bg-[#06121c] p-5 rounded-xl w-full h-auto mb-6">
+          <div
+            className="text-white"
+            dangerouslySetInnerHTML={{ __html: htmlContent || '' }}
+          />
         </div>
       </div>
     </main>

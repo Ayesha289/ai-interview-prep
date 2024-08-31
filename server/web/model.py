@@ -11,6 +11,7 @@ class Interview:
         self.user_id = interview_data.get('user_id')
         self.prompt = interview_data.get('prompt')
         self.result = interview_data.get('result')
+        self.scores = interview_data.get('scores')
 
     def get_interview_id(self):
         return str(self.id)
