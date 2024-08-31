@@ -16,7 +16,7 @@ const Page = () => {
     event.preventDefault();
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/auth/forget-password', { // Replace with your actual API endpoint
+      const response = await fetch('https://ai-interview-sage.vercel.app/auth/forget-password', { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
