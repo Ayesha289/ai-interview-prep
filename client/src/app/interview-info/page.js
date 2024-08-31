@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 export default function Interview() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const interview_id = searchParams.get('interview_id');
+  const interview_id = searchParams.get('id');
   
   const [data, setData] = useState(null);
   const [htmlContent, setHtmlContent] = useState(null);
@@ -23,7 +23,7 @@ export default function Interview() {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ interview_id }),
+            body: JSON.stringify({ interview_id: interview_id }),
           });
 
           if (!response.ok) {
@@ -31,11 +31,14 @@ export default function Interview() {
           }
 
           const result = await response.json();
+          
           setHtmlContent(result.result);
           setData(result.scores);
         } catch (error) {
           console.error("Error fetching interview data:", error);
         }
+      } else {
+        console.warn("No interview_id found in URL params.");
       }
     };
 
@@ -43,18 +46,18 @@ export default function Interview() {
   }, [interview_id]);
 
   return (
-    <main className="min-h-screen bg-slate-800 relative">
+    <main className="min-h-screen bg-slate-800 flex flex-col relative">
       <Navbar />
       <button
         onClick={() => router.push('/PrepBot')}
         className="absolute top-20 left-5 bg-blue-500 text-white font-bold py-2 px-4 rounded-full shadow-lg hover:bg-blue-600 transition duration-300 flex items-center space-x-2"
       >
-        <FaArrowLeft className="text-white" /> {/* Arrow icon */}
+        <FaArrowLeft className="text-white" />
         <span>Back to Dashboard</span>
       </button>
       <div className="grid-cols-1 m-5 mt-20">
         <div className="bg-[#06121c] p-5 rounded-xl w-full h-auto mb-6">
-          {data && (
+          {data ? (
             <ChartComponent
               data={{
                 labels: [
@@ -73,9 +76,11 @@ export default function Interview() {
                 ],
               }}
             />
+          ) : (
+            <p className="text-white">Loading chart data...</p>
           )}
         </div>
-        <div className="bg-[#06121c] p-5 rounded-xl w-full h-auto mb-6">
+        <div className="bg-[#06121c] p-5 rounded-xl w-full h-auto mb-8">
           <div
             className="text-white"
             dangerouslySetInnerHTML={{ __html: htmlContent || '' }}

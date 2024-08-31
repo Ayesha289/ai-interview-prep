@@ -68,7 +68,7 @@ const Page = () => {
             type="submit"
             className="bg-cyan-500 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out"
           >
-            Send Reset Link
+            Send Password Reset Link
           </button>
         </form>
       </main>
