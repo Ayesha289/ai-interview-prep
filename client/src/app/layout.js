@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Preppyy: Your AI-Interview prep bot!",
-  description: "AI-based mock interview practice with personalized prepation analysis",
+  description: "AI-based mock interview practice with personalized preparation analysis",
 };
 
 export default function RootLayout({ children }) {
