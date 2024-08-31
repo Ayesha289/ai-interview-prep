@@ -1,11 +1,11 @@
-from flask import Blueprint, request, jsonify, json
+from flask import Blueprint, request, jsonify, json, render_template
 from flask_login import login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from bson.objectid import ObjectId
 from flask_cors import CORS, cross_origin
 
 from . import mongo, mail
-from .mail import welcome_user
+from .mail import welcome_user, forget_pass_email
 from .model import User
 
 auth = Blueprint('auth', __name__)
@@ -64,5 +64,35 @@ def logout():
     try:
         logout_user()
         return jsonify({"message": "Successfully logged out"})
+    except Exception as e:
+        return jsonify({"error": 'An error occurred: ' + str(e)})
+    
+@auth.route('/forget-password', methods=['POST'])
+@cross_origin(allow_headers=['Content-Type'])
+def forget_password():
+    data = json.loads(request.data)
+    email = data['email']
+    user_data = mongo.db.users.find_one({"email": email})
+    if user_data:
+        user = User(user_data)
+        forget_pass_email(user)
+        return jsonify({"message": "Email for password reset has been sent!"})
+    else:
+        return jsonify({"message": 'Email does not exists!'})
+    
+    
+@auth.route('/password_reset_verified/<token>', methods=['GET', 'POST'])
+@cross_origin()
+def reset_verified(token):
+    try:
+        data = json.loads(request.data)
+        user = User.verify_reset_token(token)
+        if not user:
+            print('no user found')
+            return jsonify({"message": "User not found"})
+        password = data['password']
+        if password:
+            user.set_password(password, commit=True)
+            return jsonify({"message": "password changed successfully!"})
     except Exception as e:
         return jsonify({"error": 'An error occurred: ' + str(e)})

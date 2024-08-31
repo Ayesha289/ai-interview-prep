@@ -83,6 +83,10 @@ export default function Modal({ onClose }) {
     }
   };
 
+  const handleForgotPassword = () => {
+    router.push('/forget-password');
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur">
       <div className="bg-gray-600 rounded-lg shadow-md p-6 w-1/3 transform-shadow duration-300">
@@ -133,6 +137,18 @@ export default function Modal({ onClose }) {
             Close
           </button>
         </form>
+        
+        {!isSignUp && (
+          <div className="mt-4 text-center">
+            <button
+              onClick={handleForgotPassword}
+              className="text-cyan-300 hover:underline"
+            >
+              Forgot password?
+            </button>
+          </div>
+        )}
+        
         <p className="mt-4 text-center text-white">
           {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
           <button

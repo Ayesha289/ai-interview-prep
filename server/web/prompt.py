@@ -32,31 +32,31 @@ def generate_analysis_prompt(conversation):
     prompt = f"""
         Conversation transcripts - {conversation}
         Based on the provided conversation transcripts between the candidate and 
-        the bot, give personalized feedback directly to the candidate about their interview performance. 
+        the bot, give strict personalized feedback directly to the candidate about their interview performance. 
         Use a conversational tone to make the feedback feel more engaging and constructive. 
-        Focus on the following aspects and provide a score out of 20 for each category:
+        Focus on the following aspects and provide a score out of 100 for each category:
 
-        Communication Skills: Assess how clearly and effectively the candidate communicated 
+        Communication Skills: Strictly assess how clearly and effectively the candidate communicated 
         during the interview. Consider their ability to explain concepts, respond to questions, 
         and articulate their thoughts.
         Score (out of 100):
         Feedback: Offer specific observations on the candidate’s communication strengths and 
         areas where they could improve.
 
-        Problem-Solving Ability: Evaluate the candidate's approach to solving problems, including 
+        Problem-Solving Ability: Strictly evaluate the candidate's approach to solving problems, including 
         their logical reasoning, critical thinking, and how well they broke down complex issues.
         Score (out of 100):
         Feedback: Provide feedback on the candidate’s problem-solving strategies, noting any 
         strong points and suggesting ways to enhance their approach.
 
-        Technical Knowledge: Analyze the candidate’s understanding of technical concepts and their 
+        Technical Knowledge: Strictly analyze the candidate’s understanding of technical concepts and their 
         ability to apply knowledge to practical scenarios. Consider the accuracy and depth of their 
         explanations.
         Score (out of 100):
         Feedback: Comment on the candidate’s technical knowledge, highlighting areas where they 
         demonstrated proficiency and areas for improvement.
 
-        Engagement and Interaction: Consider the candidate’s engagement level during the interview, 
+        Engagement and Interaction: Strictly consider the candidate’s engagement level during the interview, 
         including their responsiveness, enthusiasm, and willingness to ask relevant questions.
         Score (out of 100):
         
