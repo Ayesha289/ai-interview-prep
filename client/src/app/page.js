@@ -10,13 +10,16 @@ import CoFounders from "./components/landingPage/cofounders";
 export default function Home() {
   return (
     <>
-    <main> 
-      <Navbar />
-      <MainBody />
-      <FeaturesSection />
-      <CoFounders />
-      <Footer />
-    </main>
+    <main className="flex flex-col min-h-screen bg-black text-white">
+  <Navbar />
+  <div className="flex-1">
+    <MainBody />
+    <FeaturesSection />
+    <CoFounders />
+  </div>
+  <Footer />
+</main>
+
     </>
   );
 }

@@ -1,8 +1,7 @@
 "use client";
 import * as React from "react";
-import Image from "next/image";
 import Modal from "./modal";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function Navbar() {
   const [showModal, setShowModal] = useState(false);
@@ -36,13 +35,18 @@ export default function Navbar() {
               </button>
             </div>
           </div>
+          <div className="md:hidden flex items-center">
+            <button
+              onClick={showDialog}
+              className="text-white font-medium p-3 rounded-md hover:bg-cyan-500 hover:text-black transition duration-300 ease-in-out"
+            >
+              Join Now!
+            </button>
+          </div>
         </div>
       </div>
       {/* Modal */}
-      {showModal && (
-        <Modal onClose={hideDialog} />
-      )}
-
+      {showModal && <Modal onClose={hideDialog} />}
     </nav>
   );
 }

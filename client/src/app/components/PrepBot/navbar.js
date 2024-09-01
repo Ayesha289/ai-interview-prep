@@ -13,13 +13,17 @@ export default function Navbar() {
         router.push('/');
     };
 
+    const home = () => {
+        router.push('/');
+    };
+
     return(
         <nav className='bg-[#010305] bg-opacity-90 sticky top-0 z-50'>
             <div className='max-md-7xl mx-auto px-4 sm:px-6 lg:px-8'>
                 <div className='flex items-center justify-between h-16'>
                     <div className='flex items-center'>
                         <div className='flex-shrink-0'>
-                          <span className="text-4xl font-extrabold text-transparent font-mono bg-clip-text bg-gradient-to-r from-cyan-500 to-pink-500">
+                          <span onClick={home} className="text-4xl font-extrabold text-transparent font-mono bg-clip-text bg-gradient-to-r from-cyan-500 to-pink-500">
                             PREPPYY
                           </span>
                         </div>

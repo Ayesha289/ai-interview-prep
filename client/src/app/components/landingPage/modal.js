@@ -93,8 +93,10 @@ export default function Modal({ onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur">
-      <div className="bg-gray-600 rounded-lg shadow-md p-6 w-1/3 transform-shadow duration-300">
-        <h2 className="text-xl font-bold mb-4">{isSignUp ? 'Sign Up' : 'Login'}</h2>
+      <div className="bg-gray-600 rounded-lg shadow-md p-6 w-full max-w-md mx-4 sm:mx-auto transform-shadow duration-300">
+        <h2 className="text-xl font-bold mb-4 text-white">
+          {isSignUp ? 'Sign Up' : 'Login'}
+        </h2>
         <form onSubmit={handleSubmit}>
           <input
             type="email"
@@ -105,12 +107,12 @@ export default function Modal({ onClose }) {
           />
           {isSignUp && (
             <input
-            type="text"
-            className="w-full px-3 py-2 border text-black rounded-md focus:outline-none focus:ring focus:ring-cyan-500 mt-4"
-            placeholder="Enter your name"
-            value={name}
-            onChange={handleNameChange}
-          />
+              type="text"
+              className="w-full px-3 py-2 border text-black rounded-md focus:outline-none focus:ring focus:ring-cyan-500 mt-4"
+              placeholder="Enter your name"
+              value={name}
+              onChange={handleNameChange}
+            />
           )}
           <input
             type="password"
@@ -129,19 +131,19 @@ export default function Modal({ onClose }) {
             />
           )}
           <button
-            className="bg-cyan-500 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-md mt-4 transition duration-300 ease-in-out"
+            className="bg-cyan-500 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-md mt-4 transition duration-300 ease-in-out w-full"
             type="submit"
           >
             {isSignUp ? 'Sign Up' : 'Login'}
           </button>
           <button
-            className="bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-4 rounded-md mt-4 ml-2"
+            className="bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-4 rounded-md mt-4 w-full"
             onClick={onClose}
           >
             Close
           </button>
         </form>
-        
+  
         {!isSignUp && (
           <div className="mt-4 text-center">
             <button
@@ -152,7 +154,7 @@ export default function Modal({ onClose }) {
             </button>
           </div>
         )}
-        
+  
         <p className="mt-4 text-center text-white">
           {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
           <button
@@ -166,4 +168,5 @@ export default function Modal({ onClose }) {
       </div>
     </div>
   );
+  
 }
