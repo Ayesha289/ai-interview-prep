@@ -22,6 +22,7 @@ class User(UserMixin):
         self.email = user_data.get('email')
         self.first_name = user_data.get('first_name')
         self.password = user_data.get('password')
+        self.credits = user_data.get('credits')
 
     def get_id(self):
         return str(self.id)

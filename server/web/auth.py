@@ -22,7 +22,11 @@ def login():
         if user_data and check_password_hash(user_data['password'], password):
             user = User(user_data)
             login_user(user, remember=True)
-            return jsonify({"message": "Successfully Logged In", "id": str(user.get_id())})
+            return jsonify({
+                "message": "Successfully Logged In",
+                "id": str(user.get_id()),
+                "credits": user_data.get('credits') 
+            })
         return jsonify({"message": 'Invalid credentials!'})
     except Exception as e:
         return jsonify({"error": str(e)})
@@ -37,6 +41,8 @@ def register():
         pass1 = data['password1']
         pass2 = data['password2']
 
+        credits = 60
+
         user_data = mongo.db.users.find_one({"email": email})
         if user_data:
             return jsonify({"message": 'Email Already Exists!'})
@@ -46,14 +52,15 @@ def register():
             new_user = {
                 "email": email,
                 "first_name": firstName,
-                "password": hashed_password
+                "password": hashed_password,
+                "credits": credits
             }
             inserted_id = mongo.db.users.insert_one(new_user).inserted_id
             user_data = mongo.db.users.find_one({"_id": ObjectId(inserted_id)})
             user = User(user_data)
             login_user(user, remember=True)
             welcome_user(new_user)
-            return jsonify({"message": 'Successfully registered', "id": str(user.get_id())})
+            return jsonify({"message": 'Successfully registered', "id": str(user.get_id()), "credits": credits})
     except Exception as e:
         return jsonify({"error": 'An error occurred: ' + str(e)})
 

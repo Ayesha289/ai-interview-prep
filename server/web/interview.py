@@ -19,18 +19,41 @@ CORS(interview, resources={r"/*": {"origins": "*"}})
 def initialize_conversation():
     data = request.json
     
-    if not data or 'role' not in data or 'years_of_experience' not in data or 'user_id' not in data:
+    if not data or 'role' not in data or 'years_of_experience' not in data or 'user_id' not in data or 'credits' not in data:
         return jsonify({'error': 'Invalid input'}), 400
     
     role = data['role']
     user_id = data['user_id']
+    credits = data['credits']
+
+    # Validate years of experience
     try:
         years_of_experience = int(data['years_of_experience'])
     except ValueError:
         return jsonify({'error': 'Years of experience must be an integer'}), 400
 
+    # Check if credits is an integer and non-negative
+    try:
+        credits = int(credits)
+        if credits < 0:
+            return jsonify({'error': 'Credits cannot be negative'}), 400
+    except ValueError:
+        return jsonify({'error': 'Credits must be an integer'}), 400
+
+    # Generate interview prompt based on role and experience
     bot_prompt = generate_interview_prompt(role, years_of_experience)
 
+    # Update credits in the users collection
+    updated_user = mongo.db.users.find_one_and_update(
+        {"_id": ObjectId(user_id)},
+        {"$set": {"credits": credits}},
+        return_document=True
+    )
+    
+    if not updated_user:
+        return jsonify({'error': 'Failed to update credits for the user'}), 404
+
+    # Create interview instance
     interview_instance = {
         'user_id': user_id,
         'prompt': bot_prompt,
@@ -38,11 +61,17 @@ def initialize_conversation():
         'scores': '',
     }
 
+    # Insert interview instance into the database
     inserted_id = mongo.db.interviews.insert_one(interview_instance).inserted_id
     interview_data = mongo.db.interviews.find_one({"_id": ObjectId(inserted_id)})
     interview = Interview(interview_data)
 
-    return jsonify({"message": "Conversation initialized", "interview_id": str(interview.get_interview_id()), "prompt": bot_prompt})
+    return jsonify({
+        "message": "Conversation initialized and credits updated",
+        "interview_id": str(interview.get_interview_id()),
+        "prompt": bot_prompt
+    })
+
 
 @interview.route('/results', methods=['POST'])
 @cross_origin(allow_headers=['Content-Type'])

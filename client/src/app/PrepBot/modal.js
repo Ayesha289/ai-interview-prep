@@ -23,15 +23,23 @@ export default function JobRoleModal() {
     setLoading(true); 
 
     const userId = localStorage.getItem('userId');
+    let currentCredits = parseInt(localStorage.getItem('credits'))
+    if (isNaN(currentCredits)) {
+      console.error('Invalid credits in localStorage');
+      return;
+    }
+    let newCredits = currentCredits - 25;
+    localStorage.setItem('credits', newCredits);
 
     const bodyContent = {
       role: jobRole,
       years_of_experience: parseInt(yearsOfExperience), 
       user_id: userId,
+      credits: parseInt(localStorage.getItem('credits'))
     };
 
     try {
-      const response = await fetch('https://ai-interview-sage.vercel.app/api/initialize', {
+      const response = await fetch('http://127.0.0.1:5000/api/initialize', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

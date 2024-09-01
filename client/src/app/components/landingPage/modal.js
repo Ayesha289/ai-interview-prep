@@ -26,7 +26,7 @@ export default function Modal({ onClose }) {
         return;
       }
       try {
-        const response = await fetch('https://ai-interview-sage.vercel.app/auth/register', {
+        const response = await fetch('http://127.0.0.1:5000/auth/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -42,6 +42,7 @@ export default function Modal({ onClose }) {
         if (response.ok) {
           if (data.id){
             localStorage.setItem('userId', data.id);
+            localStorage.setItem('credits', data.credits);
             alert(data.message)
             onClose()
             router.push('/PrepBot');
@@ -57,7 +58,7 @@ export default function Modal({ onClose }) {
       }
     } else {
       try {
-        const response = await fetch('https://ai-interview-sage.vercel.app/auth/login', {
+        const response = await fetch('http://127.0.0.1:5000/auth/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -71,6 +72,7 @@ export default function Modal({ onClose }) {
         if (response.ok) {
           if(data.id){
           localStorage.setItem('userId', data.id);
+          localStorage.setItem('credits', data.credits);
           onClose()
           alert(data.message);
           router.push('/PrepBot');
