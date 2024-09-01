@@ -163,13 +163,13 @@ export default function StartInterview() {
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', bgcolor: '#121212' }}>
       <Navbar />
-
+  
       <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2 }}>
         {/* Main Container with Flex Direction set to row */}
-        <Box sx={{ display: 'flex', flexDirection: 'row', bgcolor: 'black', borderRadius: 2, boxShadow: 3, overflow: 'hidden', width: '100%', maxWidth: '1400px', height: '450px' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', bgcolor: '#1c1c1c', borderRadius: 2, boxShadow: 3, overflow: 'hidden', width: '100%', maxWidth: '1400px', height: '500px' }}>
           
           {/* Camera Container */}
-          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', p: 3, borderRight: '1px solid gray', bgcolor: isCameraOn ? 'black' : 'transparent' }}>
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', p: 3, borderRight: '1px solid #424242', bgcolor: isCameraOn ? 'black' : 'transparent' }}>
             {isCameraOn ? (
               <Webcam audio={false} width="100%" height="auto" />
             ) : (
@@ -179,17 +179,17 @@ export default function StartInterview() {
           
           {/* Chat Container */}
           <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', p: 3 }}>
-            <Paper elevation={3} sx={{ flex: 1, overflowY: 'auto', p: 2, bgcolor: '#1e1e1e' }}>
+            <Paper elevation={3} sx={{ flex: 1, overflowY: 'auto', p: 2, bgcolor: '#2e2e2e' }}>
               {messages.map((message, index) => (
                 <Box key={index} sx={{ display: 'flex', justifyContent: message.role === 'assistant' ? 'flex-start' : 'flex-end', mb: 2 }}>
-                  <Box sx={{ bgcolor: message.role === 'assistant' ? 'primary.main' : 'secondary.main', color: 'white', borderRadius: 2, p: 2 }}>
+                  <Box sx={{ bgcolor: message.role === 'assistant' ? '#b2dfdb' : '#00695c', color: 'white', borderRadius: 2, p: 2 }}>
                     {message.content}
                   </Box>
                 </Box>
               ))}
               <div ref={messagesEndRef} />
             </Paper>
-
+  
             <Stack direction="row" spacing={2} mt={2}>
               <TextField
                 fullWidth
@@ -197,17 +197,17 @@ export default function StartInterview() {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder="Type your response here..."
-                sx={{ bgcolor: '#1e1e1e', input: { color: 'white' } }}
+                sx={{ bgcolor: '#2e2e2e', input: { color: 'white' } }}
               />
-              <Button variant="contained" onClick={sendMessage} disabled={isLoading} sx={{ bgcolor: '#00bcd4' }}>
+              <Button variant="contained" onClick={sendMessage} disabled={isLoading} sx={{ bgcolor: '#00695c' }}>
                 Send
               </Button>
             </Stack>
             <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 2 }}>
-              <IconButton onClick={toggleMic} sx={{ color: isMicOn ? '#00bcd4' : '#f44336' }}>
+              <IconButton onClick={toggleMic} sx={{ color: isMicOn ? '#b2dfdb' : '#f44336' }}>
                 {isMicOn ? <Mic /> : <MicOff />}
               </IconButton>
-              <IconButton onClick={toggleCamera} sx={{ color: isCameraOn ? '#00bcd4' : '#f44336' }}>
+              <IconButton onClick={toggleCamera} sx={{ color: isCameraOn ? '#b2dfdb' : '#f44336' }}>
                 {isCameraOn ? <Videocam /> : <VideocamOff />}
               </IconButton>
               <Button variant="contained" color="error" onClick={handleExitInterview} sx={{ bgcolor: '#f44336' }}>
@@ -217,14 +217,14 @@ export default function StartInterview() {
           </Box>
         </Box>
       </Box>
-
+  
       <Footer />
-
+  
       <ExitConfirmationModal
         open={isModalOpen}
         onClose={handleCloseModal}
         onConfirm={handleConfirmExit}
       />
     </Box>
-  );
+  );  
 }

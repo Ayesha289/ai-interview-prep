@@ -23,7 +23,7 @@ def generate_interview_prompt(role, years_of_experience):
     - Include questions that test {question_types}
 
     Ensure the questions are relevant and reflect the candidate’s experience level and the role they are applying for.
-    Also make sure to only frame one question at one time. Then concmude the interview after 12 to 16 questions have been asked.
+    Also make sure to only frame one question at one time. Do not repeat questions but rephrase unanswered questions. Then conclude the interview with a warm remark after 12 to 16 questions have been asked.
     """
 
     return prompt
