@@ -8,7 +8,7 @@ import {
   CategoryScale,
   LinearScale,
 } from "chart.js";
-import { Doughnut, Bar, Radar } from "react-chartjs-2";
+import { Doughnut, Bar } from "react-chartjs-2";
 import { Flipper, Flipped } from "react-flip-toolkit";
 
 // Register the necessary elements
@@ -31,14 +31,18 @@ const ChartComponent = ({ data }) => {
         label: "Dataset",
         data: data.values,
         backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(255, 206, 86, 0.2)",
+          "rgba(255, 99, 132, 0.2)",  // Red
+          "rgba(54, 162, 235, 0.2)",  // Blue
+          "rgba(255, 206, 86, 0.2)",  // Yellow
+          "rgba(75, 192, 192, 0.2)",  // Green
+          "rgba(153, 102, 255, 0.2)", // Purple
         ],
         borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
+          "rgba(255, 99, 132, 1)",  // Red
+          "rgba(54, 162, 235, 1)",  // Blue
+          "rgba(255, 206, 86, 1)",  // Yellow
+          "rgba(75, 192, 192, 1)",  // Green
+          "rgba(153, 102, 255, 1)", // Purple
         ],
         borderWidth: 2,
       },
@@ -51,8 +55,20 @@ const ChartComponent = ({ data }) => {
       {
         label: "Dataset",
         data: data.values,
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
-        borderColor: "rgba(75, 192, 192, 1)",
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.2)",  // Red
+          "rgba(54, 162, 235, 0.2)",  // Blue
+          "rgba(255, 206, 86, 0.2)",  // Yellow
+          "rgba(75, 192, 192, 0.2)",  // Green
+          "rgba(153, 102, 255, 0.2)", // Purple
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",  // Red
+          "rgba(54, 162, 235, 1)",  // Blue
+          "rgba(255, 206, 86, 1)",  // Yellow
+          "rgba(75, 192, 192, 1)",  // Green
+          "rgba(153, 102, 255, 1)", // Purple
+        ],
         borderWidth: 1,
       },
     ],
@@ -68,8 +84,6 @@ const ChartComponent = ({ data }) => {
               options={{
                 responsive: true,
                 maintainAspectRatio: false,
-                // height: 400,
-                // width: 400,
               }}
             />
           )}
@@ -79,8 +93,11 @@ const ChartComponent = ({ data }) => {
               options={{
                 responsive: true,
                 maintainAspectRatio: false,
-                height: 700,
-                // width: 400
+                plugins: {
+                  legend: {
+                    display: false, // Hides the dataset label
+                  },
+                },
               }}
             />
           )}
