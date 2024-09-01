@@ -182,7 +182,7 @@ export default function StartInterview() {
             <Paper elevation={3} sx={{ flex: 1, overflowY: 'auto', p: 2, bgcolor: '#2e2e2e' }}>
               {messages.map((message, index) => (
                 <Box key={index} sx={{ display: 'flex', justifyContent: message.role === 'assistant' ? 'flex-start' : 'flex-end', mb: 2 }}>
-                  <Box sx={{ bgcolor: message.role === 'assistant' ? '#b2dfdb' : '#00695c', color: 'white', borderRadius: 2, p: 2 }}>
+                  <Box sx={{ bgcolor: message.role === 'assistant' ? '#b2dfdb' : '#00695c', color: message.role === 'assistant' ? 'black' : 'white', borderRadius: 2, p: 2 }}>
                     {message.content}
                   </Box>
                 </Box>
@@ -226,5 +226,6 @@ export default function StartInterview() {
         onConfirm={handleConfirmExit}
       />
     </Box>
-  );  
+  );
+    
 }
