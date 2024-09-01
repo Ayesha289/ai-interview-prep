@@ -23,7 +23,7 @@ export default function Navbar() {
                 <div className='flex items-center justify-between h-16'>
                     <div className='flex items-center'>
                         <div className='flex-shrink-0'>
-                          <span onClick={home} className="text-4xl font-extrabold text-transparent font-mono bg-clip-text bg-gradient-to-r from-cyan-500 to-pink-500">
+                          <span onClick={home} className="text-4xl font-extrabold text-transparent font-mono bg-clip-text bg-gradient-to-r from-cyan-500 to-pink-500 hover:cursor-pointer">
                             PREPPYY
                           </span>
                         </div>
