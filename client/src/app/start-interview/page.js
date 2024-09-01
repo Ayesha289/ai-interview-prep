@@ -56,7 +56,7 @@ export default function StartInterview() {
     } else {
       SpeechRecognition.stopListening();
     }
-  }, [isMicOn]);
+  }, [browserSupportsSpeechRecognition, isMicOn]);
 
   useEffect(() => {
     if (isInitialMount.current) {
