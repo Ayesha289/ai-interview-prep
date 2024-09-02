@@ -36,8 +36,29 @@ export default function InterviewDashboard() {
     fetchScores();
   }, []);
 
+  const showToast = (message) => {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerText = message;
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+      toast.remove();
+    }, 3000);
+  };
+
+  const checkCredits = () => {
+    const credits = parseInt(localStorage.getItem('credits')) || 0;
+    return credits >= 25;
+  };
+
   const startNewInterview = () => {
-    setIsModalOpen(true);
+    if (checkCredits()) {
+      setIsModalOpen(true);
+    } else {
+      showToast("Insufficient credits. Please purchase more credits to start a new interview.");
+    }
   };
 
   const closeModal = () => {
