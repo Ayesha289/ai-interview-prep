@@ -35,10 +35,10 @@ def initialize_conversation():
     # Check if credits is an integer and non-negative
     try:
         credits = int(credits)
-        if credits < 0:
-            return jsonify({'error': 'Credits cannot be negative'}), 400
+        if credits < 25:
+            return jsonify({'message': 'Insufficient credits!'})
     except ValueError:
-        return jsonify({'error': 'Credits must be an integer'}), 400
+        return jsonify({'message': 'Credits must be an integer'})
 
     # Generate interview prompt based on role and experience
     bot_prompt = generate_interview_prompt(role, years_of_experience)
@@ -51,7 +51,7 @@ def initialize_conversation():
     )
     
     if not updated_user:
-        return jsonify({'error': 'Failed to update credits for the user'}), 404
+        return jsonify({'message': 'Failed to update credits for the user'})
 
     # Create interview instance
     interview_instance = {

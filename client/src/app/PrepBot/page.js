@@ -97,6 +97,8 @@ export default function InterviewDashboard() {
             </p>
 
             <ol className="text-white text-left list-decimal pl-6 space-y-2">
+              <li>As a new registered user, we are giving you 60 credits for free!</li>
+              <li>Each interview consumes 25 credits, you can buy our plans according to your needs!</li>
               <li>Click on the &quot;New Interview&quot; button.</li>
               <li>Enter your job role and the years of experience you have relevant to your job role.</li>
               <li>

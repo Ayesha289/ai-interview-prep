@@ -160,6 +160,13 @@ export default function StartInterview() {
     setIsModalOpen(false);
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault()
+        sendMessage()
+    }
+  }
+
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', bgcolor: '#121212' }}>
       <Navbar />
@@ -196,7 +203,8 @@ export default function StartInterview() {
                 variant="outlined"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                placeholder="Type your response here..."
+                onKeyPress={handleKeyPress}
+                placeholder="Your response..."
                 sx={{ bgcolor: '#2e2e2e', input: { color: 'white' } }}
               />
               <Button variant="contained" onClick={sendMessage} disabled={isLoading} sx={{ bgcolor: '#00695c' }}>

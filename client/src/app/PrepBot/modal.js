@@ -50,18 +50,23 @@ export default function JobRoleModal() {
       if (response.ok) {
         const data = await response.json();
         if (data) {
-          localStorage.setItem('interviewId', data.interview_id);
-          localStorage.setItem('prompt', data.prompt);
-          router.push('/start-interview');
+          if(data.interview_id || data.prompt){
+            localStorage.setItem('interviewId', data.interview_id);
+            localStorage.setItem('prompt', data.prompt);
+            router.push('/start-interview');
+          }
+          else{
+            alert(data.message)
+          }
         } else {
-          alert('Error: Interview ID not received from server.');
+          alert(data.message);
         }
       } else {
-        alert('Failed to initialize interview. Please try again.');
+        alert('Something went wrong');
       }
     } catch (error) {
       console.error('Error initializing interview:', error);
-      alert('Error initializing interview. Please try again.');
+      alert(data.message);
     } finally {
       setLoading(false);
     }
