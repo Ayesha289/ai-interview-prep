@@ -39,6 +39,8 @@ export default function Navbar() {
     setIsModalOpen(false);
   };
 
+  
+
   return (
     <>
       <nav className="bg-[#010305] bg-opacity-90 sticky top-0 z-50">
