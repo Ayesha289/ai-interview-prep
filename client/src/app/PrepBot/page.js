@@ -113,14 +113,15 @@ export default function InterviewDashboard() {
             <h2 className="text-2xl text-white font-bold mb-4">
               Welcome to the Interview Dashboard!
             </h2>
-            <p className="text-white text-center mb-6">
+            <h3 className="text-white text-center mb-6">
               All your interview results will be displayed here after you take an interview.
-            </p>
+            </h3>
+
+            <p className="text-white text-left text-bold pl-6 space-y-2">As a new registered user, we are giving you 60 credits for free!</p>
+            <p className="text-white text-left text-bold pl-6 space-y-2 mb-6">Each interview consumes 25 credits, you can buy our plans according to your needs!</p>
 
             <ol className="text-white text-left list-decimal pl-6 space-y-2">
-              <li>As a new registered user, we are giving you 60 credits for free!</li>
-              <li>Each interview consumes 25 credits, you can buy our plans according to your needs!</li>
-              <li>Click on the &quot;New Interview&quot; button.</li>
+              <li>To start the interview, click on the &quot;New Interview&quot; button.</li>
               <li>Enter your job role and the years of experience you have relevant to your job role.</li>
               <li>
                 You will be redirected to the interview dashboard where it is requested to turn on the mic and camera before proceeding to the interview.

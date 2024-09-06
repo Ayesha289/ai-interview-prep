@@ -163,3 +163,28 @@ def format_response_text(text):
     text = text.replace('* ', '<li>').replace('<br><li>', '<br><ul><li>').replace('<br>**Score:', '</li></ul><br>**Score:')
     text = text.replace('<br>**Overall Evaluation:**', '</li></ul><br><strong>Overall Evaluation:</strong>')
     return text
+
+@interview.route('/apply_promo', methods=['POST'])
+def apply_promo():
+    promo_codes = [
+        'ZKBB5WGNMZ', 'A0T57JLWZV', 'X5B0KKJ4KW', 'RG1VRZXGL4', 'PTO1YNON6L', 
+        'XVVRM17OF7', 'R9PMYSVDGF', 'NQ7KABX61G', '10GGXWWQ2E', '10UW23W9HE', 
+        'FYMM1BKHJD', 'G86M7LHAKS', 'IMV83XYI0X', 'N9QK2J99SC', '3GOZ8IS6UY'
+    ]
+
+    data = request.get_json()
+    promo_code = data.get('promo_code')
+    user_id = data.get('user_id')
+
+    if promo_code in promo_codes:
+        promo_codes.remove(promo_code)
+        result = mongo.db.users.find_one_and_update(
+            {"_id": ObjectId(user_id)},  
+            {"$set": {"credits": "unlimited"}}
+        )
+        if result:
+            return jsonify({"message": "Promo applied successfully!"}), 200
+        else:
+            return jsonify({"message": "User not found or update failed"}), 404
+    else:
+        return jsonify({"message": "Promo code not valid"}), 400
