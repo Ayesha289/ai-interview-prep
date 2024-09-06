@@ -49,8 +49,11 @@ export default function InterviewDashboard() {
   };
 
   const checkCredits = () => {
-    const credits = parseInt(localStorage.getItem('credits')) || 0;
-    return credits >= 25;
+    const credits = localStorage.getItem('credits') || 0;
+    if(credits >= 25 || credits == 'unlimited'){
+      return true;
+    }
+    return false;
   };
 
   const startNewInterview = () => {
