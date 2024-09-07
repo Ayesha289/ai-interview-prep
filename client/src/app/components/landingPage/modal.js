@@ -2,6 +2,8 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import CustomAlert from '../CustomAlert';
+import 'dotenv/config';
 
 export default function Modal({ onClose }) {
   const [isSignUp, setIsSignUp] = useState(true);
@@ -9,6 +11,10 @@ export default function Modal({ onClose }) {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+
+  const port = process.env.NEXT_PUBLIC_SERVER;
 
   const handleEmailChange = (event) => setEmail(event.target.value);
   const handleNameChange = (event) => setName(event.target.value);
@@ -17,16 +23,21 @@ export default function Modal({ onClose }) {
 
   const router = useRouter();
 
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setIsAlertVisible(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (isSignUp) {
       if (password !== confirmPassword) {
-        alert("Passwords do not match!");
+        showAlert("Passwords do not match!");
         return;
       }
       try {
-        const response = await fetch('http://127.0.0.1:5000/auth/register', {
+        const response = await fetch(`${port}/auth/register`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -43,22 +54,21 @@ export default function Modal({ onClose }) {
           if (data.id){
             localStorage.setItem('userId', data.id);
             localStorage.setItem('credits', data.credits);
-            alert(data.message)
             onClose()
             router.push('/PrepBot');
           }
           else
-            alert(data.message)
+            showAlert(data.message);
         } else {
-          alert(`Registration failed: ${data.message}`);
+          showAlert(`Registration failed: ${data.message}`);
         }
       } catch (error) {
         console.error('Error registering user:', error);
-        alert('An error occurred during registration.');
+        showAlert('An error occurred during registration.');
       }
     } else {
       try {
-        const response = await fetch('http://127.0.0.1:5000/auth/login', {
+        const response = await fetch(`${port}/auth/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -71,20 +81,19 @@ export default function Modal({ onClose }) {
         const data = await response.json();
         if (response.ok) {
           if(data.id){
-          localStorage.setItem('userId', data.id);
-          localStorage.setItem('credits', data.credits);
-          onClose()
-          alert(data.message);
-          router.push('/PrepBot');
-        }else{
-          alert(data.message)
-        }
+            localStorage.setItem('userId', data.id);
+            localStorage.setItem('credits', data.credits);
+            onClose()
+            router.push('/PrepBot');
+          }else{
+            showAlert(data.message)
+          }
         } else {
-          alert(`Login failed: ${data.message}`);
+          showAlert(`Login failed: ${data.message}`);
         }
       } catch (error) {
         console.error('Error logging in:', error);
-        alert('An error occurred during login.');
+        showAlert('An error occurred during login.');
       }
     }
   };
@@ -93,7 +102,17 @@ export default function Modal({ onClose }) {
     router.push('/forget-password');
   };
 
+  const closeAlert = () => {
+    setIsAlertVisible(false);
+  };
+
   return (
+    <>
+    <CustomAlert
+        message={alertMessage}
+        isVisible={isAlertVisible}
+        onClose={closeAlert}
+    />
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur">
       <div className="bg-gray-600 rounded-lg shadow-md p-6 w-full max-w-md mx-4 sm:mx-auto transform-shadow duration-300">
         <h2 className="text-xl font-bold mb-4 text-white">
@@ -169,6 +188,7 @@ export default function Modal({ onClose }) {
         </p>
       </div>
     </div>
+    </>
   );
   
 }

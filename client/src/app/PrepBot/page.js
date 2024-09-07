@@ -3,18 +3,28 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ChartComponent from "../components/PrepBot/reusableChart";
 import Navbar from "../components/PrepBot/navbar";
+import CustomAlert from "../components/CustomAlert";
 import JobRoleModal from "./modal.js";
+import 'dotenv/config';
 
 export default function InterviewDashboard() {
+  const port = process.env.NEXT_PUBLIC_SERVER;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [scores, setScores] = useState([]);
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
   const router = useRouter();
+
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setIsAlertVisible(true);
+  };
 
   useEffect(() => {
     const fetchScores = async () => {
       const user_id = localStorage.getItem('userId');
       try {
-        const response = await fetch("https://ai-interview-sage.vercel.app/api/scores", {
+        const response = await fetch(`${port}/api/scores`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -23,34 +33,23 @@ export default function InterviewDashboard() {
         });
 
         if (!response.ok) {
-          throw new Error("Failed to fetch scores");
+          showAlert("Failed to fetch scores");
         }
 
         const data = await response.json();
         setScores(data.scores);
       } catch (error) {
-        console.error("Error fetching scores:", error);
+        showAlert("Error fetching scores:", error);
       }
     };
 
     fetchScores();
   }, []);
 
-  const showToast = (message) => {
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.innerText = message;
-
-    document.body.appendChild(toast);
-
-    setTimeout(() => {
-      toast.remove();
-    }, 3000);
-  };
 
   const checkCredits = () => {
-    const credits = localStorage.getItem('credits') || 0;
-    if(credits >= 25 || credits == 'unlimited'){
+    const credits = localStorage.getItem('credits');
+    if(credits >= 25 || credits === 'Unlimited'){
       return true;
     }
     return false;
@@ -60,7 +59,7 @@ export default function InterviewDashboard() {
     if (checkCredits()) {
       setIsModalOpen(true);
     } else {
-      showToast("Insufficient credits. Please purchase more credits to start a new interview.");
+      showAlert("Insufficient credits. Please purchase more credits to start a new interview.");
     }
   };
 
@@ -75,9 +74,18 @@ export default function InterviewDashboard() {
     router.push(`/interview-info?${queryString}`);
   };
 
+  const closeAlert = () => {
+    setIsAlertVisible(false);
+  };
+
   return (
     <>
       <Navbar />
+      <CustomAlert
+        message={alertMessage}
+        isVisible={isAlertVisible}
+        onClose={closeAlert}
+      />
       <div className="min-h-screen p-6 bg-slate-950">
         {scores.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -120,10 +128,10 @@ export default function InterviewDashboard() {
               All your interview results will be displayed here after you take an interview.
             </h3>
 
-            <p className="text-white text-left text-bold pl-6 space-y-2">As a new registered user, we are giving you 60 credits for free!</p>
-            <p className="text-white text-left text-bold pl-6 space-y-2 mb-6">Each interview consumes 25 credits, you can buy our plans according to your needs!</p>
-
             <ol className="text-white text-left list-decimal pl-6 space-y-2">
+              <p>As a new registered user, we are giving you 60 credits for free!</p>
+              <p>Each interview consumes 25 credits, you can buy our plans according to your needs!</p>
+              <br/>
               <li>To start the interview, click on the &quot;New Interview&quot; button.</li>
               <li>Enter your job role and the years of experience you have relevant to your job role.</li>
               <li>

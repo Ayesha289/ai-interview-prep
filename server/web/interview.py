@@ -32,45 +32,39 @@ def initialize_conversation():
     except ValueError:
         return jsonify({'error': 'Years of experience must be an integer'}), 400
 
-    # Check if credits is an integer and non-negative
-    try:
-        credits = int(credits)
-        if credits < 25:
-            return jsonify({'message': 'Insufficient credits!'})
-    except ValueError:
-        return jsonify({'message': 'Credits must be an integer'})
-
-    # Generate interview prompt based on role and experience
-    bot_prompt = generate_interview_prompt(role, years_of_experience)
-
-    # Update credits in the users collection
-    updated_user = mongo.db.users.find_one_and_update(
-        {"_id": ObjectId(user_id)},
-        {"$set": {"credits": credits}},
-        return_document=True
-    )
+    if(isinstance(credits, int) and credits < 25):
+        return jsonify({'message': 'Insufficient credits!'})
     
-    if not updated_user:
-        return jsonify({'message': 'Failed to update credits for the user'})
+    if((isinstance(credits, int) and credits >= 25) or (isinstance(credits, str) and credits == "Unlimited")):
+        bot_prompt = generate_interview_prompt(role, years_of_experience)
 
-    # Create interview instance
-    interview_instance = {
-        'user_id': user_id,
-        'prompt': bot_prompt,
-        'result': '',
-        'scores': '',
-    }
+        updated_user = mongo.db.users.find_one_and_update(
+            {"_id": ObjectId(user_id)},
+            {"$set": {"credits": credits}},
+            return_document=True
+        )
+        
+        if not updated_user:
+            return jsonify({'message': 'Failed to update credits for the user'})
 
-    # Insert interview instance into the database
-    inserted_id = mongo.db.interviews.insert_one(interview_instance).inserted_id
-    interview_data = mongo.db.interviews.find_one({"_id": ObjectId(inserted_id)})
-    interview = Interview(interview_data)
+        interview_instance = {
+            'user_id': user_id,
+            'prompt': bot_prompt,
+            'result': '',
+            'scores': '',
+        }
 
-    return jsonify({
-        "message": "Conversation initialized and credits updated",
-        "interview_id": str(interview.get_interview_id()),
-        "prompt": bot_prompt
-    })
+        inserted_id = mongo.db.interviews.insert_one(interview_instance).inserted_id
+        interview_data = mongo.db.interviews.find_one({"_id": ObjectId(inserted_id)})
+        interview = Interview(interview_data)
+
+        return jsonify({
+            "message": "Conversation initialized and credits updated",
+            "interview_id": str(interview.get_interview_id()),
+            "prompt": bot_prompt
+        })
+    else:
+        return jsonify({'message': 'Invalid credits'})
 
 
 @interview.route('/results', methods=['POST'])

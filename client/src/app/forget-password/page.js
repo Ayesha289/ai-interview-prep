@@ -3,10 +3,21 @@
 import React, { useState } from 'react';
 import Footer from './../components/landingPage/footer';
 import { useRouter } from 'next/navigation';
+import CustomAlert from '../components/CustomAlert';
+import 'dotenv/config';
 
 const Page = () => {
+  const port = process.env.NEXT_PUBLIC_SERVER;
   const [email, setEmail] = useState('');
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+
   const router = useRouter();
+
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setIsAlertVisible(true);
+  };
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -16,7 +27,7 @@ const Page = () => {
     event.preventDefault();
 
     try {
-      const response = await fetch('https://ai-interview-sage.vercel.app/auth/forget-password', { 
+      const response = await fetch(`${port}/auth/forget-password`, { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -27,19 +38,29 @@ const Page = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert(data.message);
+        showAlert(data.message);
         router.push('/');
         
       } else {
-        alert(`Error: ${data.message}`);
+        showAlert(`Error: ${data.message}`);
       }
     } catch (error) {
       console.error('Error sending password reset email:', error);
-      alert('An error occurred while sending the password reset email.');
+      showAlert('An error occurred while sending the password reset email.');
     }
   };
 
+  const closeAlert = () => {
+    setIsAlertVisible(false);
+  };
+
   return (
+    <>
+    <CustomAlert
+        message={alertMessage}
+        isVisible={isAlertVisible}
+        onClose={closeAlert}
+    />
     <div className="min-h-screen flex flex-col bg-gray-900">
       <nav className="bg-black bg-opacity-80 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -74,6 +95,7 @@ const Page = () => {
       </main>
       <Footer />
     </div>
+    </>
   );
 };
 

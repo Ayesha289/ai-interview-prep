@@ -3,8 +3,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { GiMagicPalm } from "react-icons/gi";
 import { useState, useEffect } from "react";
+import 'dotenv/config';
 
 export default function Navbar() {
+  const port = process.env.NEXT_PUBLIC_SERVER;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [credits, setCredits] = useState(0);
   const [showReferralInput, setShowReferralInput] = useState(false);
@@ -17,6 +19,7 @@ export default function Navbar() {
     localStorage.removeItem("userId");
     localStorage.removeItem("interviewId");
     localStorage.removeItem("conversationHistory");
+    localStorage.removeItem("credits");
     router.push("/");
   };
 
@@ -45,13 +48,12 @@ export default function Navbar() {
     setPromoError(false);
     setPromoSuccess(false);
     setPromoCode("");
-    window.location.reload();
   };
 
   const applyPromoCode = async () => {
     try {
       const user_id = localStorage.getItem('userId');
-      const response = await fetch("http://127.0.0.1:5000/api/apply_promo", {
+      const response = await fetch(`${port}/api/apply_promo`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,6 +67,7 @@ export default function Navbar() {
         localStorage.setItem("credits", "Unlimited");
         setPromoError(false);
         setPromoSuccess(true);
+        window.location.reload();
       } else {
         setPromoError(true);
         setPromoSuccess(false);
@@ -75,8 +78,6 @@ export default function Navbar() {
       setPromoSuccess(false);
     }
   };
-
-
 
   return (
     <>
@@ -121,24 +122,24 @@ export default function Navbar() {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="bg-black opacity-50 absolute inset-0"></div>
-          <div className="bg-white p-6 rounded-lg z-10 max-w-md mx-auto">
+          <div className="bg-[#1e1e1e] p-6 rounded-lg z-10 max-w-md mx-auto shadow-lg text-white">
             <h2 className="text-2xl font-semibold mb-6 text-center">
               Choose a Plan
             </h2>
             <div className="space-y-4">
               {/* Basic Plan */}
-              <div className="p-4 border rounded-lg shadow-md hover:shadow-lg transition">
+              <div className="p-4 border border-gray-600 rounded-lg shadow-md hover:shadow-lg transition">
                 <h3 className="text-xl font-bold mb-2">Get 25 Credits for $8</h3>
-                <p className="text-gray-600 mb-4">(Basic Plan)</p>
+                <p className="text-gray-400 mb-4">(Basic Plan)</p>
                 <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition duration-300 ease-in-out w-full">
                   Select Basic Plan
                 </button>
               </div>
 
               {/* Unlimited Plan */}
-              <div className="p-4 border rounded-lg shadow-md hover:shadow-lg transition">
+              <div className="p-4 border border-gray-600 rounded-lg shadow-md hover:shadow-lg transition">
                 <h3 className="text-xl font-bold mb-2">$20 for Unlimited Credits</h3>
-                <p className="text-gray-600 mb-4">for one month</p>
+                <p className="text-gray-400 mb-4">for one month</p>
                 <button className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600 transition duration-300 ease-in-out w-full">
                   Select Unlimited Plan
                 </button>
@@ -148,7 +149,7 @@ export default function Navbar() {
               <div>
                 <button
                   onClick={() => setShowReferralInput(true)}
-                  className="underline"
+                  className="no-underline hover:text-gray-200"
                 >
                   Have a referral code?
                 </button>
@@ -160,16 +161,18 @@ export default function Navbar() {
                       value={promoCode}
                       onChange={(e) => setPromoCode(e.target.value)}
                       placeholder="Enter promo code"
-                      className={`p-2 border rounded-md flex-grow mb-2 ${promoError ? 'border-red-500' : 'border-gray-300'
-                        }`}
+                      className={`p-2 border rounded-md flex-grow bg-gray-700 text-white ${promoError ? 'border-red-500' : 'border-gray-600'}`}
+                      style={{ height: '42px' }} // Ensuring consistent height
                     />
                     <button
                       onClick={applyPromoCode}
                       className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition duration-300 ease-in-out"
+                      style={{ height: '42px', padding: '0 16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} // Ensuring consistent height and centering
                     >
                       Apply
                     </button>
                   </div>
+
                 )}
 
                 {promoError && (
