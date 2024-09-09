@@ -34,22 +34,27 @@ export default function InterviewDashboard() {
 
         if (!response.ok) {
           showAlert("Failed to fetch scores");
+          return;
         }
 
         const data = await response.json();
-        setScores(data.scores);
+        if (Array.isArray(data.scores)) {
+          setScores(data.scores);
+        } else {
+          showAlert("No scores available.");
+        }
       } catch (error) {
-        showAlert("Error fetching scores:", error);
+        showAlert("Error fetching scores.");
       }
     };
 
     fetchScores();
-  }, []);
-
+  }, [port]);
 
   const checkCredits = () => {
     const credits = localStorage.getItem('credits');
-    if(credits >= 25 || credits === 'Unlimited'){
+    const creditsNumber = Number(credits);
+    if (credits === 'Unlimited' || creditsNumber >= 20) {
       return true;
     }
     return false;
@@ -130,7 +135,7 @@ export default function InterviewDashboard() {
 
             <ol className="text-white text-left list-decimal pl-6 space-y-2">
               <p>As a new registered user, we are giving you 60 credits for free!</p>
-              <p>Each interview consumes 25 credits, you can buy our plans according to your needs!</p>
+              <p>Each interview consumes 20 credits, you can buy our plans according to your needs!</p>
               <br/>
               <li>To start the interview, click on the &quot;New Interview&quot; button.</li>
               <li>Enter your job role and the years of experience you have relevant to your job role.</li>

@@ -129,19 +129,19 @@ export default function Navbar() {
             <div className="space-y-4">
               {/* Basic Plan */}
               <div className="p-4 border border-gray-600 rounded-lg shadow-md hover:shadow-lg transition">
-                <h3 className="text-xl font-bold mb-2">Get 25 Credits for $8</h3>
-                <p className="text-gray-400 mb-4">(Basic Plan)</p>
+                <h3 className="text-xl font-bold mb-2">Get 20 Credits for $8</h3>
+                <p className="text-gray-400 mb-4">Perfect for occasional users or a one-time boost in your credits.</p>
                 <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition duration-300 ease-in-out w-full">
-                  Select Basic Plan
+                  Buy Credits
                 </button>
               </div>
 
               {/* Unlimited Plan */}
               <div className="p-4 border border-gray-600 rounded-lg shadow-md hover:shadow-lg transition">
-                <h3 className="text-xl font-bold mb-2">$20 for Unlimited Credits</h3>
-                <p className="text-gray-400 mb-4">for one month</p>
+                <h3 className="text-xl font-bold mb-2">Get 80 Credits for $25</h3>
+                <p className="text-gray-400 mb-4">Ideal for frequent users who need a substantial amount of credits.</p>
                 <button className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600 transition duration-300 ease-in-out w-full">
-                  Select Unlimited Plan
+                  Buy Credits
                 </button>
               </div>
 
@@ -172,7 +172,6 @@ export default function Navbar() {
                       Apply
                     </button>
                   </div>
-
                 )}
 
                 {promoError && (

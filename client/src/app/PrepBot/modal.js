@@ -29,88 +29,56 @@ export default function JobRoleModal() {
       showAlert('Please fill out all fields.');
       return;
     }
-  
+
     setLoading(true);
-  
+
     const userId = localStorage.getItem('userId');
     let currentCredits = localStorage.getItem('credits');
     
-    // Convert currentCredits to a number if it's not "Unlimited"
-    if (currentCredits !== "Unlimited") {
-      currentCredits = Number(currentCredits);
-      
-      // Check if credits are valid number
-      if (isNaN(currentCredits)) {
-        console.error('Invalid credits in localStorage');
-        showAlert('Error with credits.');
-        setLoading(false);
-        return;
-      }
-    }
-  
-    // Check if credits are sufficient or "Unlimited"
-    if (currentCredits >= 25) {
-      let newCredits;
-      if (currentCredits === "Unlimited") {
-        newCredits = "Unlimited";
-      } else {
-        newCredits = currentCredits - 25;
-        
-        // Ensure credits don't go negative
-        if (newCredits < 0) {
-          console.error('Credits are going negative:', newCredits);
-          showAlert('Error with credits.');
-          setLoading(false);
-          return;
-        }
-      }
-      
-      localStorage.setItem('credits', newCredits);
-  
-      const bodyContent = {
-        role: jobRole,
-        years_of_experience: parseInt(yearsOfExperience), 
-        user_id: userId,
-        credits: newCredits
-      };
-  
-      try {
-        const response = await fetch(`${port}/api/initialize`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(bodyContent),
-        });
-  
-        if (response.ok) {
-          const data = await response.json();
-          if (data) {
-            if (data.interview_id || data.prompt) {
-              localStorage.setItem('interviewId', data.interview_id);
-              localStorage.setItem('prompt', data.prompt);
-              router.push('/start-interview');
-            } else {
-              showAlert(data.message);
-            }
-          } else {
-            showAlert(data.message);
-          }
-        } else {
-          showAlert('Something went wrong');
-        }
-      } catch (error) {
-        console.error('Error initializing interview:', error);
-        showAlert('Error initializing interview.');
-      } finally {
-        setLoading(false);
-      }
+    if (currentCredits === "Unlimited") {
+      currentCredits = "Unlimited";
     } else {
-      showAlert('Insufficient credits');
+      currentCredits -= 20;
+    }
+    
+    localStorage.setItem('credits', currentCredits);
+
+    const bodyContent = {
+      role: jobRole,
+      years_of_experience: parseInt(yearsOfExperience), 
+      user_id: userId,
+      credits: currentCredits
+    };
+
+    try {
+      const response = await fetch(`${port}/api/initialize`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bodyContent),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.interview_id || data.prompt) {
+          localStorage.setItem('interviewId', data.interview_id);
+          localStorage.setItem('prompt', data.prompt);
+          router.push('/start-interview');
+        } else {
+          showAlert(data.message);
+        }
+      } else {
+        showAlert('Something went wrong');
+      }
+    } catch (error) {
+      console.error('Error initializing interview:', error);
+      showAlert('Error initializing interview.');
+    } finally {
       setLoading(false);
     }
   };
-  
+
   const closeAlert = () => {
     setIsAlertVisible(false);
   };
