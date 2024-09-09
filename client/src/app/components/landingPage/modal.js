@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import CustomAlert from '../CustomAlert';
 
 export default function Modal({ onClose }) {
   const [isSignUp, setIsSignUp] = useState(true);
@@ -9,6 +10,8 @@ export default function Modal({ onClose }) {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   const handleEmailChange = (event) => setEmail(event.target.value);
   const handleNameChange = (event) => setName(event.target.value);
@@ -17,12 +20,17 @@ export default function Modal({ onClose }) {
 
   const router = useRouter();
 
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setIsAlertVisible(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (isSignUp) {
       if (password !== confirmPassword) {
-        alert("Passwords do not match!");
+        showAlert("Passwords do not match!");
         return;
       }
       try {
@@ -42,18 +50,18 @@ export default function Modal({ onClose }) {
         if (response.ok) {
           if (data.id){
             localStorage.setItem('userId', data.id);
-            alert(data.message)
+            showAlert(data.message)
             onClose()
             router.push('/PrepBot');
           }
           else
-            alert(data.message)
+            showAlert(data.message)
         } else {
-          alert(`Registration failed: ${data.message}`);
+          showAlert(`Registration failed: ${data.message}`);
         }
       } catch (error) {
         console.error('Error registering user:', error);
-        alert('An error occurred during registration.');
+        showAlert('An error occurred during registration.');
       }
     } else {
       try {
@@ -72,17 +80,17 @@ export default function Modal({ onClose }) {
           if(data.id){
           localStorage.setItem('userId', data.id);
           onClose()
-          alert(data.message);
+          showAlert(data.message);
           router.push('/PrepBot');
         }else{
-          alert(data.message)
+          showAlert(data.message)
         }
         } else {
-          alert(`Login failed: ${data.message}`);
+          showAlert(`Login failed: ${data.message}`);
         }
       } catch (error) {
         console.error('Error logging in:', error);
-        alert('An error occurred during login.');
+        showAlert('An error occurred during login.');
       }
     }
   };
@@ -91,7 +99,17 @@ export default function Modal({ onClose }) {
     router.push('/forget-password');
   };
 
+  const closeAlert = () => {
+    setIsAlertVisible(false);
+  };
+
   return (
+    <>
+    <CustomAlert
+        message={alertMessage}
+        isVisible={isAlertVisible}
+        onClose={closeAlert}
+    />
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur">
       <div className="bg-gray-600 rounded-lg shadow-md p-6 w-full max-w-md mx-4 sm:mx-auto transform-shadow duration-300">
         <h2 className="text-xl font-bold mb-4 text-white">
@@ -167,6 +185,7 @@ export default function Modal({ onClose }) {
         </p>
       </div>
     </div>
+    </>
   );
   
 }

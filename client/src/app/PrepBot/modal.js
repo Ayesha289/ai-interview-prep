@@ -2,13 +2,21 @@
 import React, { useState } from 'react';
 import { Modal, Box, TextField, Button, Typography } from '@mui/material';
 import { useRouter } from "next/navigation";
+import CustomAlert from '../components/CustomAlert';
 
 export default function JobRoleModal() {
   const [open, setOpen] = useState(true);
   const [jobRole, setJobRole] = useState('');
   const [yearsOfExperience, setYearsOfExperience] = useState('');
   const [loading, setLoading] = useState(false); // Loading state for button
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
   const router = useRouter();
+
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setIsAlertVisible(true);
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -16,7 +24,7 @@ export default function JobRoleModal() {
 
   const handleStartInterview = async () => {
     if (jobRole.trim() === '' || yearsOfExperience.trim() === '') {
-      alert('Please fill out all fields.');
+      showAlert('Please fill out all fields.');
       return;
     }
 
@@ -46,21 +54,31 @@ export default function JobRoleModal() {
           localStorage.setItem('prompt', data.prompt);
           router.push('/start-interview');
         } else {
-          alert('Error: Interview ID not received from server.');
+          showAlert('Error: Interview ID not received from server.');
         }
       } else {
-        alert('Failed to initialize interview. Please try again.');
+        showAlert('Failed to initialize interview. Please try again.');
       }
     } catch (error) {
       console.error('Error initializing interview:', error);
-      alert('Error initializing interview. Please try again.');
+      showAlert('Error initializing interview. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
+  const closeAlert = () => {
+    setIsAlertVisible(false);
+  };
+
 
   return (
+    <>
+    <CustomAlert
+        message={alertMessage}
+        isVisible={isAlertVisible}
+        onClose={closeAlert}
+    />
     <Modal
       open={open}
       onClose={handleClose}
@@ -158,5 +176,6 @@ export default function JobRoleModal() {
         </Box>
       </Box>
     </Modal>
+    </>
   );
 }
