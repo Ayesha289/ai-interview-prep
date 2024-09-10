@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import CustomAlert from '../CustomAlert';
+import 'dotenv/config';
 
 export default function Modal({ onClose }) {
   const [isSignUp, setIsSignUp] = useState(true);
@@ -12,6 +13,8 @@ export default function Modal({ onClose }) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const port = process.env.NEXT_PUBLIC_SERVER;
+
 
   const handleEmailChange = (event) => setEmail(event.target.value);
   const handleNameChange = (event) => setName(event.target.value);
@@ -34,7 +37,7 @@ export default function Modal({ onClose }) {
         return;
       }
       try {
-        const response = await fetch('https://ai-interview-sage.vercel.app/auth/register', {
+        const response = await fetch(`${port}/auth/register`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -50,12 +53,12 @@ export default function Modal({ onClose }) {
         if (response.ok) {
           if (data.id){
             localStorage.setItem('userId', data.id);
-            showAlert(data.message)
+            localStorage.setItem('credits', data.credits);
             onClose()
             router.push('/PrepBot');
           }
           else
-            showAlert(data.message)
+            showAlert(data.message);
         } else {
           showAlert(`Registration failed: ${data.message}`);
         }
@@ -65,7 +68,7 @@ export default function Modal({ onClose }) {
       }
     } else {
       try {
-        const response = await fetch('https://ai-interview-sage.vercel.app/auth/login', {
+        const response = await fetch(`${port}/auth/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -78,13 +81,13 @@ export default function Modal({ onClose }) {
         const data = await response.json();
         if (response.ok) {
           if(data.id){
-          localStorage.setItem('userId', data.id);
-          onClose()
-          showAlert(data.message);
-          router.push('/PrepBot');
-        }else{
-          showAlert(data.message)
-        }
+            localStorage.setItem('userId', data.id);
+            localStorage.setItem('credits', data.credits);
+            onClose()
+            router.push('/PrepBot');
+          }else{
+            showAlert(data.message)
+          }
         } else {
           showAlert(`Login failed: ${data.message}`);
         }

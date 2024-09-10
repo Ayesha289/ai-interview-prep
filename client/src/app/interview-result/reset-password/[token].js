@@ -3,9 +3,11 @@
 import React, { useState } from 'react';
 import Footer from '../components/landingPage/footer';
 import { useRouter } from 'next/navigation';
-import CustomAlert from '../components/CustomAlert';
+import CustomAlert from "../components/CustomAlert";
+import 'dotenv/config';
 
 const Page = () => {
+    const port = process.env.NEXT_PUBLIC_SERVER;
     const [password, setPassword] = useState('');
     const [isAlertVisible, setIsAlertVisible] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
@@ -15,7 +17,7 @@ const Page = () => {
     const showAlert = (message) => {
         setAlertMessage(message);
         setIsAlertVisible(true);
-      };
+    };
 
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
@@ -25,7 +27,7 @@ const Page = () => {
         event.preventDefault();
         if (token) {
             try {
-                const response = await fetch(`http://127.0.0.1:5000/auth/password_reset_verified/${token}`, { // Replace with your actual API endpoint
+                const response = await fetch(`${port}/auth/password_reset_verified/${token}`, { // Replace with your actual API endpoint
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

@@ -19,30 +19,53 @@ CORS(interview, resources={r"/*": {"origins": "*"}})
 def initialize_conversation():
     data = request.json
     
-    if not data or 'role' not in data or 'years_of_experience' not in data or 'user_id' not in data:
+    if not data or 'role' not in data or 'years_of_experience' not in data or 'user_id' not in data or 'credits' not in data:
         return jsonify({'error': 'Invalid input'}), 400
     
     role = data['role']
     user_id = data['user_id']
+    credits = data['credits']
+
+    # Validate years of experience
     try:
         years_of_experience = int(data['years_of_experience'])
     except ValueError:
         return jsonify({'error': 'Years of experience must be an integer'}), 400
 
-    bot_prompt = generate_interview_prompt(role, years_of_experience)
+    if(isinstance(credits, int) and credits < 25):
+        return jsonify({'message': 'Insufficient credits!'})
+    
+    if((isinstance(credits, int) and credits >= 25) or (isinstance(credits, str) and credits == "Unlimited")):
+        bot_prompt = generate_interview_prompt(role, years_of_experience)
 
-    interview_instance = {
-        'user_id': user_id,
-        'prompt': bot_prompt,
-        'result': '',
-        'scores': '',
-    }
+        updated_user = mongo.db.users.find_one_and_update(
+            {"_id": ObjectId(user_id)},
+            {"$set": {"credits": credits}},
+            return_document=True
+        )
+        
+        if not updated_user:
+            return jsonify({'message': 'Failed to update credits for the user'})
 
-    inserted_id = mongo.db.interviews.insert_one(interview_instance).inserted_id
-    interview_data = mongo.db.interviews.find_one({"_id": ObjectId(inserted_id)})
-    interview = Interview(interview_data)
+        interview_instance = {
+            'user_id': user_id,
+            'prompt': bot_prompt,
+            'result': '',
+            'scores': '',
+        }
 
-    return jsonify({"message": "Conversation initialized", "interview_id": str(interview.get_interview_id()), "prompt": bot_prompt})
+        inserted_id = mongo.db.interviews.insert_one(interview_instance).inserted_id
+        interview_data = mongo.db.interviews.find_one({"_id": ObjectId(inserted_id)})
+        interview = Interview(interview_data)
+
+        return jsonify({
+            "message": "Conversation initialized and credits updated",
+            "interview_id": str(interview.get_interview_id()),
+            "prompt": bot_prompt
+        })
+    else:
+        return jsonify({'message': 'Invalid credits'})
+
 
 @interview.route('/results', methods=['POST'])
 @cross_origin(allow_headers=['Content-Type'])
@@ -134,3 +157,28 @@ def format_response_text(text):
     text = text.replace('* ', '<li>').replace('<br><li>', '<br><ul><li>').replace('<br>**Score:', '</li></ul><br>**Score:')
     text = text.replace('<br>**Overall Evaluation:**', '</li></ul><br><strong>Overall Evaluation:</strong>')
     return text
+
+promo_codes = [
+    'ZKBB5WGNMZ', 'A0T57JLWZV', 'X5B0KKJ4KW', 'RG1VRZXGL4', 'PTO1YNON6L', 
+    'XVVRM17OF7', 'R9PMYSVDGF', 'NQ7KABX61G', '10GGXWWQ2E', '10UW23W9HE', 
+    'FYMM1BKHJD', 'G86M7LHAKS', 'IMV83XYI0X', 'N9QK2J99SC', '3GOZ8IS6UY'
+]
+
+@interview.route('/apply_promo', methods=['POST'])
+def apply_promo():
+    data = request.get_json()
+    promo_code = data.get('promo_code')
+    user_id = data.get('user_id')
+
+    if promo_code in promo_codes:
+        promo_codes.remove(promo_code)
+        result = mongo.db.users.find_one_and_update(
+            {"_id": ObjectId(user_id)},  
+            {"$set": {"credits": "Unlimited"}}
+        )
+        if result:
+            return jsonify({"message": "Promo applied successfully!"}), 200
+        else:
+            return jsonify({"message": "User not found or update failed"}), 404
+    else:
+        return jsonify({"message": "Promo code not valid"}), 400

@@ -1,9 +1,12 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from './navbar'; 
+import Navbar from './navbar';
+import Footer from "../components/landingPage/footer" 
+import 'dotenv/config';
 
 export default function AnalysisPage() {
+  const port = process.env.NEXT_PUBLIC_SERVER;
   const [responseHtml, setResponseHtml] = useState('');
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -28,7 +31,7 @@ export default function AnalysisPage() {
       };
 
       try {
-        const response = await fetch('https://ai-interview-sage.vercel.app/api/analysis', {
+        const response = await fetch(`${port}/api/analysis`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -69,6 +72,7 @@ export default function AnalysisPage() {
           </div>
         )}
       </main>
+      <Footer/>
     </div>
   );
 }

@@ -3,18 +3,29 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ChartComponent from "../components/PrepBot/reusableChart";
 import Navbar from "../components/PrepBot/navbar";
+import CustomAlert from "../components/CustomAlert";
 import JobRoleModal from "./modal.js";
+import Footer from "../components/landingPage/footer"
+import 'dotenv/config';
 
 export default function InterviewDashboard() {
+  const port = process.env.NEXT_PUBLIC_SERVER;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [scores, setScores] = useState([]);
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
   const router = useRouter();
+
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setIsAlertVisible(true);
+  };
 
   useEffect(() => {
     const fetchScores = async () => {
       const user_id = localStorage.getItem('userId');
       try {
-        const response = await fetch("https://ai-interview-sage.vercel.app/api/scores", {
+        const response = await fetch(`${port}/api/scores`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -23,21 +34,39 @@ export default function InterviewDashboard() {
         });
 
         if (!response.ok) {
-          throw new Error("Failed to fetch scores");
+          showAlert("Failed to fetch scores");
+          return;
         }
 
         const data = await response.json();
-        setScores(data.scores);
+        if (Array.isArray(data.scores)) {
+          setScores(data.scores);
+        } else {
+          showAlert("No scores available.");
+        }
       } catch (error) {
-        console.error("Error fetching scores:", error);
+        showAlert("Error fetching scores.");
       }
     };
 
     fetchScores();
-  }, []);
+  }, [port]);
+
+  const checkCredits = () => {
+    const credits = localStorage.getItem('credits');
+    const creditsNumber = Number(credits);
+    if (credits === 'Unlimited' || creditsNumber >= 20) {
+      return true;
+    }
+    return false;
+  };
 
   const startNewInterview = () => {
-    setIsModalOpen(true);
+    if (checkCredits()) {
+      setIsModalOpen(true);
+    } else {
+      showAlert("Insufficient credits. Please purchase more credits to start a new interview.");
+    }
   };
 
   const closeModal = () => {
@@ -51,9 +80,18 @@ export default function InterviewDashboard() {
     router.push(`/interview-info?${queryString}`);
   };
 
+  const closeAlert = () => {
+    setIsAlertVisible(false);
+  };
+
   return (
     <>
       <Navbar />
+      <CustomAlert
+        message={alertMessage}
+        isVisible={isAlertVisible}
+        onClose={closeAlert}
+      />
       <div className="min-h-screen p-6 bg-slate-950">
         {scores.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -92,12 +130,15 @@ export default function InterviewDashboard() {
             <h2 className="text-2xl text-white font-bold mb-4">
               Welcome to the Interview Dashboard!
             </h2>
-            <p className="text-white text-center mb-6">
+            <h3 className="text-white text-center mb-6">
               All your interview results will be displayed here after you take an interview.
-            </p>
+            </h3>
 
             <ol className="text-white text-left list-decimal pl-6 space-y-2">
-              <li>Click on the &quot;New Interview&quot; button.</li>
+              <p>As a new registered user, we are giving you 60 credits for free!</p>
+              <p>Each interview consumes 20 credits, you can buy our plans according to your needs!</p>
+              <br/>
+              <li>To start the interview, click on the &quot;New Interview&quot; button.</li>
               <li>Enter your job role and the years of experience you have relevant to your job role.</li>
               <li>
                 You will be redirected to the interview dashboard where it is requested to turn on the mic and camera before proceeding to the interview.
@@ -118,6 +159,7 @@ export default function InterviewDashboard() {
           New Interview
         </button>
       </div>
+      <Footer />
 
       {isModalOpen && <JobRoleModal />}
     </>

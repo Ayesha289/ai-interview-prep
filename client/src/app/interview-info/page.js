@@ -5,8 +5,11 @@ import ChartComponent from "../components/PrepBot/reusableChart";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FaArrowLeft } from 'react-icons/fa'; 
 import { useState, useEffect } from 'react';
+import Footer from "../components/landingPage/footer"
+import 'dotenv/config';
 
 export default function Interview() {
+  const port = process.env.NEXT_PUBLIC_SERVER;
   const router = useRouter();
   const searchParams = useSearchParams();
   const interview_id = searchParams.get('id');
@@ -18,7 +21,7 @@ export default function Interview() {
     const fetchInterviewData = async () => {
       if (interview_id) {
         try {
-          const response = await fetch("https://ai-interview-sage.vercel.app/api/results", {
+          const response = await fetch(`${port}/api/results`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -87,6 +90,7 @@ export default function Interview() {
           />
         </div>
       </div>
+      <Footer/>
     </main>
   );
 }

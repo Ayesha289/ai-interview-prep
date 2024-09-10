@@ -2,10 +2,7 @@
 import * as React from "react";
 import Modal from "../components/landingPage/modal";
 import { useState } from "react";
-import MenuIcon from '@mui/icons-material/Menu';
-import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
-import { useRouter } from 'next/navigation'; // Import useRouter for navigation
+import { useRouter } from 'next/navigation'; 
 
 export default function Navbar() {
   const [showModal, setShowModal] = useState(false);
@@ -20,7 +17,6 @@ export default function Navbar() {
     setShowMenu(!showMenu);
   };
 
-  // Function to navigate to /PrepBot
   const navigateToDashboard = () => {
     router.push('/PrepBot');
   };
