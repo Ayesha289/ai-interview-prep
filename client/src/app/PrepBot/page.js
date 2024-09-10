@@ -5,6 +5,7 @@ import ChartComponent from "../components/PrepBot/reusableChart";
 import Navbar from "../components/PrepBot/navbar";
 import CustomAlert from "../components/CustomAlert";
 import JobRoleModal from "./modal.js";
+import Footer from "../components/landingPage/footer"
 import 'dotenv/config';
 
 export default function InterviewDashboard() {
@@ -158,6 +159,7 @@ export default function InterviewDashboard() {
           New Interview
         </button>
       </div>
+      <Footer />
 
       {isModalOpen && <JobRoleModal />}
     </>

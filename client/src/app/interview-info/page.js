@@ -5,6 +5,7 @@ import ChartComponent from "../components/PrepBot/reusableChart";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FaArrowLeft } from 'react-icons/fa'; 
 import { useState, useEffect } from 'react';
+import Footer from "../components/landingPage/footer"
 import 'dotenv/config';
 
 export default function Interview() {
@@ -89,6 +90,7 @@ export default function Interview() {
           />
         </div>
       </div>
+      <Footer/>
     </main>
   );
 }

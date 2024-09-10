@@ -1,7 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from './navbar'; 
+import Navbar from './navbar';
+import Footer from "../components/landingPage/footer" 
 import 'dotenv/config';
 
 export default function AnalysisPage() {
@@ -71,6 +72,7 @@ export default function AnalysisPage() {
           </div>
         )}
       </main>
+      <Footer/>
     </div>
   );
 }
