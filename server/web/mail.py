@@ -3,13 +3,13 @@ from flask_mail import Message
 from . import mail
 
 
-def welcome_user(user):
+def welcome_user(user, otp):
 
     msg = Message()
-    msg.subject = "Welcome to Preppyy!!"
+    msg.subject = "Verify your Email"
     msg.sender = 'info.preppyy@gmail.com'
     msg.recipients = [user["email"]]
-    msg.html = render_template('welcome.html', user=user)
+    msg.html = render_template('welcome.html', user=user, otp=otp)
 
     mail.send(msg)
 

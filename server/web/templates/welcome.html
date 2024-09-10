@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Preppyy!</title>
+    <title>Email Verification</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -26,26 +26,21 @@
             color: #666;
             line-height: 1.5;
         }
-        .button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px 25px;
+        .otp {
+            font-size: 24px;
+            font-weight: bold;
             text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            border-radius: 5px;
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to Preppyy!</h1>
+        <h1>Email Verification</h1>
         <p>Hi,</p>
-        <p>We’re thrilled to have you as a part of the Preppyy community! Get ready to elevate your interview skills with our AI-powered mock interviews.</p>
-        <p>Your journey to interview success begins now. Dive in and experience realistic interview simulations with tailored feedback that will boost your confidence and readiness.</p>
-        <p>Click the button below to jump-start your practice:</p>
-        <a href="https://ai-interview-client.vercel.app/" class="button">Get Started Now</a>
-        <p>If you have any questions or need assistance, our support team is here to help you every step of the way.</p>
+        <p>Please use the following OTP to verify your email address. This OTP is valid for 5 minutes.</p>
+        <div class="otp">{{ otp }}</div> 
+        <p>If you didn't request this, please ignore this email.</p>
         <p>Cheers,</p>
         <p>The Preppyy Team</p>
     </div>
