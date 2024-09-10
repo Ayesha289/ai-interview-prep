@@ -13,8 +13,6 @@ const ResetPassword = () => {
     const [alertMessage, setAlertMessage] = useState("");
 
     const searchParams = useSearchParams();
-    const [isAlertVisible, setIsAlertVisible] = useState(false);
-    const [alertMessage, setAlertMessage] = useState("");
     const router = useRouter();
     const token = searchParams.get('token');
 
