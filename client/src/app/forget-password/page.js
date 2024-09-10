@@ -26,7 +26,7 @@ const Page = () => {
     event.preventDefault();
 
     try {
-      const response = await fetch(`${port}/auth/forget-password`, { \
+      const response = await fetch(`${port}/auth/forget-password`, { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
