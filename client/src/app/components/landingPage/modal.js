@@ -13,8 +13,8 @@ export default function Modal({ onClose }) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
-
   const port = process.env.NEXT_PUBLIC_SERVER;
+
 
   const handleEmailChange = (event) => setEmail(event.target.value);
   const handleNameChange = (event) => setName(event.target.value);

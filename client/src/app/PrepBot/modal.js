@@ -10,7 +10,7 @@ export default function JobRoleModal() {
   const [open, setOpen] = useState(true);
   const [jobRole, setJobRole] = useState('');
   const [yearsOfExperience, setYearsOfExperience] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // Loading state for button
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const router = useRouter();

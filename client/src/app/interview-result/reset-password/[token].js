@@ -11,7 +11,6 @@ const Page = () => {
     const [password, setPassword] = useState('');
     const [isAlertVisible, setIsAlertVisible] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
-
     const router = useRouter();
     const { token } = router.query;
 

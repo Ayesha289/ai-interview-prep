@@ -11,7 +11,6 @@ const Page = () => {
   const [email, setEmail] = useState('');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
-
   const router = useRouter();
 
   const showAlert = (message) => {
@@ -27,7 +26,7 @@ const Page = () => {
     event.preventDefault();
 
     try {
-      const response = await fetch(`${port}/auth/forget-password`, { 
+      const response = await fetch(`${port}/auth/forget-password`, { \
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -40,7 +39,7 @@ const Page = () => {
       if (response.ok) {
         showAlert(data.message);
         router.push('/');
-        
+
       } else {
         showAlert(`Error: ${data.message}`);
       }

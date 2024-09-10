@@ -18,7 +18,7 @@ export default function StartInterview() {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: "Hi! I'm the AI-based interviewer. Can you tell me a bit about yourself?",
+      content: "Hi! I'm Preppy, an AI-based interviewer. Can you tell me a bit about yourself?",
     },
   ]);
 
@@ -27,7 +27,7 @@ export default function StartInterview() {
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [text, setText] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [conversationHistory, setConversationHistory] = useState([{ speaker: 'bot', message: "Hi! I'm the AI-based interviewer. Can you tell me a bit about yourself?" }]);
+  const [conversationHistory, setConversationHistory] = useState([{ speaker: 'assistant', message: "Hi! I'm Preppy an AI-based interviewer. Can you tell me a bit about yourself?" }]);
 
   const messagesEndRef = useRef(null);
   const isInitialMount = useRef(true);
@@ -61,6 +61,11 @@ export default function StartInterview() {
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
+      // Speak the initial message after the component mounts
+      if (messages.length) {
+        const initialMessage = messages[0].content; 
+        speakText(initialMessage);
+      }
     } else {
       if (messages.length && messages[messages.length - 1].role === 'assistant') {
         const lastMessage = messages[messages.length - 1].content;
@@ -69,10 +74,26 @@ export default function StartInterview() {
     }
   }, [messages]);
 
-  const speakText = (text) => {
+  const speakText = async (text) => {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(text);
-      window.speechSynthesis.speak(utterance);
+      const setVoice = async () => {
+        const voices = window.speechSynthesis.getVoices();
+        const desiredVoice = voices.find(voice => voice.name === 'Microsoft Mark - English (United States)');
+        if (desiredVoice) {
+          utterance.voice = desiredVoice;
+        }
+        window.speechSynthesis.speak(utterance);
+      };
+      
+      // Fetch voices and then speak
+      if (window.speechSynthesis.getVoices().length === 0) {
+        window.speechSynthesis.onvoiceschanged = () => {
+          setVoice();
+        };
+      } else {
+        setVoice();
+      }
     } else {
       console.error('Speech Synthesis not supported in this browser.');
     }
@@ -162,20 +183,17 @@ export default function StartInterview() {
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
-        event.preventDefault()
-        sendMessage()
+        event.preventDefault();
+        sendMessage();
     }
-  }
+  };
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', bgcolor: '#121212' }}>
       <Navbar />
   
       <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2 }}>
-        {/* Main Container with Flex Direction set to row */}
         <Box sx={{ display: 'flex', flexDirection: 'row', bgcolor: '#1c1c1c', borderRadius: 2, boxShadow: 3, overflow: 'hidden', width: '100%', maxWidth: '1400px', height: '500px' }}>
-          
-          {/* Camera Container */}
           <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', p: 3, borderRight: '1px solid #424242', bgcolor: isCameraOn ? 'black' : 'transparent' }}>
             {isCameraOn ? (
               <Webcam audio={false} width="100%" height="auto" />
@@ -183,29 +201,34 @@ export default function StartInterview() {
               <Box sx={{ width: '100%', height: '100%' }} />
             )}
           </Box>
-          
-          {/* Chat Container */}
           <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', p: 3 }}>
-            <Paper elevation={3} sx={{ flex: 1, overflowY: 'auto', p: 2, bgcolor: '#2e2e2e' }}>
-              {messages.map((message, index) => (
-                <Box key={index} sx={{ display: 'flex', justifyContent: message.role === 'assistant' ? 'flex-start' : 'flex-end', mb: 2 }}>
-                  <Box sx={{ bgcolor: message.role === 'assistant' ? '#b2dfdb' : '#00695c', color: message.role === 'assistant' ? 'black' : 'white', borderRadius: 2, p: 2 }}>
-                    {message.content}
-                  </Box>
-                </Box>
-              ))}
-              <div ref={messagesEndRef} />
-            </Paper>
-  
+            {/* Image container above the send button */}
+            <Box sx={{ width: '100%', height: '200px', mb: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Box sx={{
+                width: '250px', 
+                height: '250px',
+                borderRadius: '50%',
+                border: '5px solid white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <img src="assets/interviewMascot.png" alt="Interview" style={{ maxWidth: '100%', maxHeight: '100%', borderRadius: '50%' }} />
+              </Box>
+            </Box>
+
             <Stack direction="row" spacing={2} mt={2}>
-              <TextField
+            <TextField
                 fullWidth
                 variant="outlined"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Your response..."
-                sx={{ bgcolor: '#2e2e2e', input: { color: 'white' } }}
+                multiline
+                minRows={1}
+                maxRows={6}
+                sx={{ bgcolor: '#2e2e2e', input: { color: 'white' }, '& textarea': { color: 'white' } }}
               />
               <Button variant="contained" onClick={sendMessage} disabled={isLoading} sx={{ bgcolor: '#00695c' }}>
                 Send
@@ -235,5 +258,4 @@ export default function StartInterview() {
       />
     </Box>
   );
-    
 }
