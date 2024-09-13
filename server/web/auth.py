@@ -50,10 +50,6 @@ def register():
         user_data = mongo.db.users.find_one({"email": email})
         if user_data:
             return jsonify({"message": 'Email Already Exists!'})
-        else:
-            # Check if passwords match
-            if pass1 != pass2:
-                return jsonify({"message": "Passwords do not match!"}), 400
 
             # Hash the password
             hashed_password = generate_password_hash(pass1, method='pbkdf2:sha256', salt_length=16)
