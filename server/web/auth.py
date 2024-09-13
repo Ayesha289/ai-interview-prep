@@ -50,32 +50,31 @@ def register():
         user_data = mongo.db.users.find_one({"email": email})
         if user_data:
             return jsonify({"message": 'Email Already Exists!'})
+        # Hash the password
+        hashed_password = generate_password_hash(pass1, method='pbkdf2:sha256', salt_length=16)
 
-            # Hash the password
-            hashed_password = generate_password_hash(pass1, method='pbkdf2:sha256', salt_length=16)
+        # Create new user without storing OTP
+        new_user = {
+            "email": email,
+            "first_name": firstName,
+            "password": hashed_password,
+            "credits": credits
+        }
 
-            # Create new user without storing OTP
-            new_user = {
-                "email": email,
-                "first_name": firstName,
-                "password": hashed_password,
-                "credits": credits
-            }
+        # Insert new user into the database
+        inserted_id = mongo.db.users.insert_one(new_user).inserted_id
+        user_data = mongo.db.users.find_one({"_id": ObjectId(inserted_id)})
+        user = User(user_data)
+        login_user(user, remember=True)
 
-            # Insert new user into the database
-            inserted_id = mongo.db.users.insert_one(new_user).inserted_id
-            user_data = mongo.db.users.find_one({"_id": ObjectId(inserted_id)})
-            user = User(user_data)
-            login_user(user, remember=True)
+        secret_key = pyotp.random_base32()
+        otp_generate = pyotp.TOTP(secret_key, interval=600)
+        otp = otp_generate.now()
+        otp_storage[str(user.get_id())] = otp
 
-            secret_key = pyotp.random_base32()
-            otp_generate = pyotp.TOTP(secret_key, interval=600)
-            otp = otp_generate.now()
-            otp_storage[str(user.get_id())] = otp
+        welcome_user(new_user, otp)
 
-            welcome_user(new_user, otp)
-
-            return jsonify({"message": 'Successfully registered. OTP sent to email.', "id": str(user.get_id()), "credits": credits})
+        return jsonify({"message": 'Successfully registered. OTP sent to email.', "id": str(user.get_id()), "credits": credits})
     except Exception as e:
         return jsonify({"error": 'An error occurred: ' + str(e)})
 
