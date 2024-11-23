@@ -20,7 +20,7 @@
     "firebase": "^10.13.0",
     "framer-motion": "^11.3.28",
     "mongodb": "^6.8.0",
-    "next": "^14.2.6",
+    "next": "^14.2.10",
     "nodemailer": "^6.9.14",
     "react": "^18",
     "react-chartjs-2": "^5.2.0",
